@@ -1,0 +1,41 @@
+﻿<Page
+    x:Class="Sliding_Puzzle.Views.CreatePuzzle"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Sliding_Puzzle.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Name="gMain" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Create your own puzzle!" FontSize="40" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Image Stretch="Fill" Name="imgForPuzzle" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Source="/Images/Image-Placeholder.jpg" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="500" Height="500"/>
+        <Canvas Name="DrawGrid" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Width="500" Height="500">
+
+        </Canvas>
+        <StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Upload image:" Width="150" FontSize="20" Margin="0,0,50,0"/>
+                <Button Name="btPickImage" Content="Select" Width="80" Click="btPickImage_Click" FontSize="20"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Size of puzzle:" Width="150" FontSize="20" Margin="0,0,50,0"/>
+                <ComboBox Name="cbPuzzlesizes" IsEnabled="False" Width="80" SelectionChanged="cbPuzzlesizes_SelectionChanged">
+                    <ComboBoxItem Content="3"/>
+                    <ComboBoxItem Content="4"/>
+                    <ComboBoxItem Content="5"/>
+                </ComboBox>
+            </StackPanel>
+            <Button IsEnabled="False" Name="btCreateCustomPuzzle" Height="40" HorizontalAlignment="Stretch" Content="Create" FontSize="20" Margin="0,5,0,0" Click="BtCreateCustomPuzzle_ClickAsync"/>
+        </StackPanel>
+    </Grid>
+</Page>

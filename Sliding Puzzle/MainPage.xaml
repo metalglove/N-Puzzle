@@ -1,0 +1,50 @@
+﻿<Page
+    x:Class="Sliding_Puzzle.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Sliding_Puzzle"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xaml="using:Windows.UI.Xaml"
+    mc:Ignorable="d">
+    <Grid Background="WhiteSmoke" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="9*"/>
+        </Grid.RowDefinitions>
+        <Button Name="CreatePuzzleFromImage" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,5,0,5" Content="Create A Puzzle" FontSize="13" FontWeight="Bold" Click="CreatePuzzleFromImage_Click"/>
+
+        <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Hidden">
+
+            <ListView x:Name="lvPuzzles">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Height="160">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="2*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="15" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="WrapWholeWords" FontWeight="Bold"/>
+                            <Image Source="{Binding Image}"  Tag="{Binding Folder}" Stretch="Fill" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Tapped="Image_Tapped"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            
+            <!-- <StackPanel >
+                <Button Name="BandosPuzzle" Tag="Bandos" Click="Puzzle_Click" Content="Bandos" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,0,0"/>
+                <Button Name="TreePuzzle" Tag="Tree" Click="Puzzle_Click" Content="Tree" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
+                <Button Name="CastlePuzzle" Tag="Castle" Click="Puzzle_Click" Content="Castle" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
+                <Button Name="TrollPuzzle" Tag="Troll" Click="Puzzle_Click" Content="Troll" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
+                <Button Name="KingBlackDragonPuzzle" Tag="King Black Dragon" Click="Puzzle_Click" Content="KBD" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
+                <Button Name="CorporealBeastPuzzle" Tag="Corporeal Beast" Click="Puzzle_Click" Content="Corp" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
+            </StackPanel>-->
+        </ScrollViewer>
+        
+        <Frame Grid.Row="1" Grid.Column="1" Name="ContentFrame" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+    </Grid>
+</Page>
