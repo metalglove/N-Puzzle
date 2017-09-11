@@ -55,6 +55,7 @@ namespace Sliding_Puzzle.Classes
             new int[,]{ { 4 }, { 4 } }// is the white puzzle piece
         };
         private Random Random = new Random();
+        private List<BitmapImage> PuzzlePieceImages = new List<BitmapImage>();
         #endregion PuzzleSetup
 
         #region PuzzleGame
@@ -74,9 +75,8 @@ namespace Sliding_Puzzle.Classes
             this.PuzzleSize = PuzzleSize;
             this.Folder = Folder;
             this.PuzzleName = PuzzleName;
-            GeneratePuzzle();
+            GetAllImages();
         }
-
         #region PuzzleCreation
         public void GeneratePuzzle()
         {
@@ -171,8 +171,8 @@ namespace Sliding_Puzzle.Classes
             PuzzlePiece.VerticalAlignment = VerticalAlignment.Stretch;
             PuzzlePiece.Tag = PuzzlePieceCount;
             ImageBrush brush = new ImageBrush();
-            brush.ImageSource = GetImageFromStorageFolderAsync((PuzzlePieceCount + 1)).Result;//new BitmapImage(new Uri("ms-appx:///SlidingPuzzles/" + PuzzleName +"/" + (PuzzlePieceCount + 1) + ".png", UriKind.RelativeOrAbsolute));
-            PuzzlePiece.Background = brush;
+            brush.ImageSource = PuzzlePieceImages[PuzzlePieceCount]; //GetImageFromStorageFolderAsync((PuzzlePieceCount + 1)).Result;//new BitmapImage(new Uri("ms-appx:///SlidingPuzzles/" + PuzzleName +"/" + (PuzzlePieceCount + 1) + ".png", UriKind.RelativeOrAbsolute));
+            //PuzzlePiece.Background = new SolidColorBrush(Colors.Red);//brush;
             Button button = new Button();
             button.VerticalAlignment = VerticalAlignment.Center;
             button.HorizontalAlignment = HorizontalAlignment.Center;
@@ -224,6 +224,34 @@ namespace Sliding_Puzzle.Classes
             
             return image;
 
+        }
+        public async void GetAllImages()
+        {
+            List<BitmapImage> images = new List<BitmapImage>();
+            StorageFolder pictureFolder2 = await Folder.GetFolderAsync(PuzzleSize.ToString());
+            try
+            {
+                for (int i = 1; i < 25; i++)
+                {
+                    Debug.WriteLine("Image from folder: " + i.ToString());
+                    StorageFile img = await pictureFolder2.GetFileAsync(i.ToString() + ".png");
+                    BitmapImage image = new BitmapImage(new Uri(img.Path));
+                    //BitmapImage image = new BitmapImage();
+                    //using (IRandomAccessStream fileStream = await img.OpenAsync(FileAccessMode.Read))
+                    //{
+                        //image.SetSource(fileStream);
+                    //}
+                    images.Add(image);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex.ToString());
+                throw;
+            }
+            
+            PuzzlePieceImages = images;
+            GeneratePuzzle();
         }
         #endregion PuzzleCreation
 

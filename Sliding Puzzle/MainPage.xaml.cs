@@ -50,7 +50,7 @@ namespace Sliding_Puzzle
         }
         private async void LoadExistingPuzzlesAsync()
         {
-            StorageFolder pictureFolder = await KnownFolders.PicturesLibrary.GetFolderAsync("SlidingPuzzles");
+            StorageFolder pictureFolder = await KnownFolders.PicturesLibrary.CreateFolderAsync("SlidingPuzzles", CreationCollisionOption.OpenIfExists);
             IReadOnlyList<StorageFolder> folderList = await pictureFolder.GetFoldersAsync();
             foreach (StorageFolder item in folderList)
             {
