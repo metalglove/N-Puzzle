@@ -76,6 +76,7 @@ namespace Sliding_Puzzle.Classes
             this.Folder = Folder;
             this.PuzzleName = PuzzleName;
             GetAllImages();
+            //GeneratePuzzle();
         }
         #region PuzzleCreation
         public void GeneratePuzzle()
@@ -236,10 +237,9 @@ namespace Sliding_Puzzle.Classes
                     Debug.WriteLine("Image from folder: " + i.ToString());
                     StorageFile img = await pictureFolder2.GetFileAsync(i.ToString() + ".png");
                     BitmapImage image = new BitmapImage(new Uri(img.Path));
-                    //BitmapImage image = new BitmapImage();
                     //using (IRandomAccessStream fileStream = await img.OpenAsync(FileAccessMode.Read))
                     //{
-                        //image.SetSource(fileStream);
+                    //image.SetSource(fileStream);
                     //}
                     images.Add(image);
                 }
@@ -249,7 +249,6 @@ namespace Sliding_Puzzle.Classes
                 Debug.Write(ex.ToString());
                 throw;
             }
-            
             PuzzlePieceImages = images;
             GeneratePuzzle();
         }

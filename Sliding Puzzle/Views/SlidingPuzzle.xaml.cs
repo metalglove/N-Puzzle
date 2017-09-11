@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Sliding_Puzzle.Classes;
+using System.Threading.Tasks;
 
 namespace Sliding_Puzzle.Views
 {
