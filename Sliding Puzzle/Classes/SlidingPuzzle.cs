@@ -19,40 +19,61 @@ namespace Sliding_Puzzle.Classes
     class SlidingPuzzle
     {
         #region PuzzleSetup
-        public int PuzzleSize { get; private set; }
+        private int InversionsDecider;
+        private int _PuzzleSize;
+        public int PuzzleSize
+        {
+            get { return _PuzzleSize; }
+            private set
+            {
+                _PuzzleSize = value;
+                switch (_PuzzleSize)
+                {
+                    case 3:
+                        InversionsDecider = 8;
+                        break;
+                    case 4:
+                        InversionsDecider = 15;
+                        break;
+                    case 5:
+                        InversionsDecider = 24;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
         public string PuzzleName { get; set; }
         public StorageFolder Folder { get; set; }
         private Grid PuzzleBox = new Grid();
         private List<Grid> PuzzlePieces = new List<Grid>();
         private Grid WhitePuzzlePiece = new Grid();
         private List<int> PuzzlePiecesAsInt = new List<int>();
-        private int[][,] CorrectPuzzleLocations = new int[][,]
+        private List<int[][,]> CorrectPuzzleLocations = new List<int[][,]>
         {
-            new int[,]{ { 0 }, { 0 } },
-            new int[,]{ { 0 }, { 1 } },
-            new int[,]{ { 0 }, { 2 } },
-            new int[,]{ { 0 }, { 3 } },
-            new int[,]{ { 0 }, { 4 } },
-            new int[,]{ { 1 }, { 0 } },
-            new int[,]{ { 1 }, { 1 } },
-            new int[,]{ { 1 }, { 2 } },
-            new int[,]{ { 1 }, { 3 } },
-            new int[,]{ { 1 }, { 4 } },
-            new int[,]{ { 2 }, { 0 } },
-            new int[,]{ { 2 }, { 1 } },
-            new int[,]{ { 2 }, { 2 } },
-            new int[,]{ { 2 }, { 3 } },
-            new int[,]{ { 2 }, { 4 } },
-            new int[,]{ { 3 }, { 0 } },
-            new int[,]{ { 3 }, { 1 } },
-            new int[,]{ { 3 }, { 2 } },
-            new int[,]{ { 3 }, { 3 } },
-            new int[,]{ { 3 }, { 4 } },
-            new int[,]{ { 4 }, { 0 } },
-            new int[,]{ { 4 }, { 1 } },
-            new int[,]{ { 4 }, { 2 } },
-            new int[,]{ { 4 }, { 3 } },
-            new int[,]{ { 4 }, { 4 } }// is the white puzzle piece
+            new int[][,]//3x3 puzzle
+            {
+                new int[,]{ { 0 }, { 0 } }, new int[,]{ { 0 }, { 1 } }, new int[,]{ { 0 }, { 2 } }, 
+                new int[,]{ { 1 }, { 0 } }, new int[,]{ { 1 }, { 1 } }, new int[,]{ { 1 }, { 2 } }, 
+                new int[,]{ { 2 }, { 0 } }, new int[,]{ { 2 }, { 1 } }, new int[,]{ { 2 }, { 2 } }// is the white puzzle piece
+            },
+            new int[][,]//4x4 puzzle
+            {
+                new int[,]{ { 0 }, { 0 } }, new int[,]{ { 0 }, { 1 } }, new int[,]{ { 0 }, { 2 } }, new int[,]{ { 0 }, { 3 } },
+                new int[,]{ { 1 }, { 0 } }, new int[,]{ { 1 }, { 1 } }, new int[,]{ { 1 }, { 2 } }, new int[,]{ { 1 }, { 3 } },
+                new int[,]{ { 2 }, { 0 } }, new int[,]{ { 2 }, { 1 } }, new int[,]{ { 2 }, { 2 } }, new int[,]{ { 2 }, { 3 } },
+                new int[,]{ { 3 }, { 0 } }, new int[,]{ { 3 }, { 1 } }, new int[,]{ { 3 }, { 2 } }, new int[,]{ { 3 }, { 3 } }// is the white puzzle piece
+            },
+            new int[][,]//5x5 puzzle
+            {
+                new int[,]{ { 0 }, { 0 } }, new int[,]{ { 0 }, { 1 } }, new int[,]{ { 0 }, { 2 } }, new int[,]{ { 0 }, { 3 } }, new int[,]{ { 0 }, { 4 } },
+                new int[,]{ { 1 }, { 0 } }, new int[,]{ { 1 }, { 1 } }, new int[,]{ { 1 }, { 2 } }, new int[,]{ { 1 }, { 3 } }, new int[,]{ { 1 }, { 4 } },
+                new int[,]{ { 2 }, { 0 } }, new int[,]{ { 2 }, { 1 } }, new int[,]{ { 2 }, { 2 } }, new int[,]{ { 2 }, { 3 } }, new int[,]{ { 2 }, { 4 } },
+                new int[,]{ { 3 }, { 0 } }, new int[,]{ { 3 }, { 1 } }, new int[,]{ { 3 }, { 2 } }, new int[,]{ { 3 }, { 3 } }, new int[,]{ { 3 }, { 4 } },
+                new int[,]{ { 4 }, { 0 } }, new int[,]{ { 4 }, { 1 } }, new int[,]{ { 4 }, { 2 } }, new int[,]{ { 4 }, { 3 } }, new int[,]{ { 4 }, { 4 } }// is the white puzzle piece
+            }
+
+            
         };
         private Random Random = new Random();
         private List<BitmapImage> PuzzlePieceImages = new List<BitmapImage>();
@@ -63,20 +84,12 @@ namespace Sliding_Puzzle.Classes
         public int TimeSpent { get; private set; }
         private DispatcherTimer PuzzleTimer { get; set; }
         #endregion
-        public SlidingPuzzle(int PuzzleSize, string PuzzleName)
-        {
-            this.PuzzleSize = PuzzleSize;
-            this.PuzzleName = PuzzleName;
-            GeneratePuzzle();
-        }
+
         public SlidingPuzzle(int PuzzleSize, StorageFolder Folder, string PuzzleName)
         {
             this.PuzzleSize = PuzzleSize;
             this.Folder = Folder;
             this.PuzzleName = PuzzleName;
-
-          
-            //GeneratePuzzle();
         }
 
         #region PuzzleCreation
@@ -103,13 +116,13 @@ namespace Sliding_Puzzle.Classes
         private RowDefinition AddRow()
         {
             RowDefinition Row = new RowDefinition();
-            Row.Height = new GridLength(100, GridUnitType.Auto);
+            Row.Height = new GridLength((500 / PuzzleSize), GridUnitType.Auto);
             return Row;
         }
         private ColumnDefinition AddColumn()
         {
             ColumnDefinition Column = new ColumnDefinition();
-            Column.Width = new GridLength(100, GridUnitType.Auto);
+            Column.Width = new GridLength((500 / PuzzleSize), GridUnitType.Auto);
             return Column;
         }
         private void LoadPuzzleBoxHolder()
@@ -169,26 +182,21 @@ namespace Sliding_Puzzle.Classes
                 Debug.Write("White PuzzlePiece ");
                 return WhitePuzzlePiece;
             }
-
             Grid PuzzlePiece = new Grid();
             PuzzlePiece.HorizontalAlignment = HorizontalAlignment.Stretch;
             PuzzlePiece.VerticalAlignment = VerticalAlignment.Stretch;
             PuzzlePiece.Tag = PuzzlePieceCount;
             ImageBrush brush = new ImageBrush();
             brush.ImageSource = PuzzlePieceImages[PuzzlePieceCount];
-            //brush.ImageSource = GetImageFromStorageFolderAsync((PuzzlePieceCount + 1)).Result;
-            //brush.ImageSource = new BitmapImage(new Uri("ms-appx:///SlidingPuzzles/" + PuzzleName +"/" + (PuzzlePieceCount + 1) + ".png", UriKind.RelativeOrAbsolute));
-            //PuzzlePiece.Background = new SolidColorBrush(Colors.Red);
             PuzzlePiece.Background = brush;
             Button button = new Button();
-            //button.Background = brush;
             button.VerticalAlignment = VerticalAlignment.Center;
             button.HorizontalAlignment = HorizontalAlignment.Center;
             button.Click += (sender, e) => Move(sender, e, PuzzlePiece);
-            button.Width = 100;
-            button.Height = 100;
+            button.Width = (500 / PuzzleSize);
+            button.Height = (500 / PuzzleSize);
             Debug.Write(PuzzlePieceCount + " ");
-            //button.Content = PuzzlePieceCount.ToString();
+            //button.Content = PuzzlePieceCount.ToString(); for debbugging with numbers
             PuzzlePiece.Children.Add(button);
 
             return PuzzlePiece;
@@ -209,7 +217,7 @@ namespace Sliding_Puzzle.Classes
                 }
                 // Determine if the distance of the blank space from the bottom 
                 // right is even or odd, and increment inversions if it is odd.
-                if (PuzzlePiecesAsInt[i] == 24 && i % 2 == 1)
+                if (PuzzlePiecesAsInt[i] == InversionsDecider && i % 2 == 1)
                 {
                     inversions++;
                 }
@@ -217,41 +225,17 @@ namespace Sliding_Puzzle.Classes
             // If inversions is even, the puzzle is solvable.
             return (inversions % 2 == 0);
         }
-        private async Task<BitmapImage> GetImageFromStorageFolderAsync(int puzzlepiece)
-        {
-            Debug.WriteLine("Image from folder: " + puzzlepiece.ToString());
-            BitmapImage image = new BitmapImage();
-            try
-            {
-                StorageFolder pictureFolder2 = await Folder.GetFolderAsync(PuzzleSize.ToString());
-                StorageFile img = await pictureFolder2.GetFileAsync(puzzlepiece + ".png");
-                /*using (IRandomAccessStream fileStream = img.OpenAsync(FileAccessMode.Read).GetResults())
-                {
-                    image.SetSource(fileStream);
-                }
-                return image;*/
-                image = new BitmapImage(new Uri(img.Path, UriKind.Absolute));
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex.ToString());
-                throw;
-            }
-            
-            return image;
-
-        }
         public async Task GetAllImages()
         {
             List<BitmapImage> images = new List<BitmapImage>();
             try
             {
                 StorageFolder pictureFolder2 = await Folder.GetFolderAsync(PuzzleSize.ToString());
-                for (int i = 1; i < 25; i++)
+                for (int i = 1; i < (PuzzleSize * PuzzleSize); i++)
                 {
                     Debug.WriteLine("Image from folder: " + i.ToString());
                     StorageFile img = await pictureFolder2.GetFileAsync(i.ToString() + ".png");
-                    BitmapImage image = new BitmapImage(new Uri(img.Path, UriKind.Absolute));
+                    BitmapImage image = new BitmapImage();
                     using (IRandomAccessStream fileStream = await img.OpenAsync(FileAccessMode.Read))
                     {
                         image.SetSource(fileStream);
@@ -266,7 +250,6 @@ namespace Sliding_Puzzle.Classes
             }
 
             PuzzlePieceImages = images;
-            //GeneratePuzzle();
         }
         #endregion PuzzleCreation
 
@@ -276,7 +259,6 @@ namespace Sliding_Puzzle.Classes
             Debug.WriteLine("-*****-\nClicked puzzle piece : " + PuzzlePiece.Tag.ToString());
             int PuzzlePieceRow = Grid.GetRow(PuzzlePiece);
             int PuzzlePieceColumn = Grid.GetColumn(PuzzlePiece);
-
             int WhitePuzzlePieceRow = Grid.GetRow(WhitePuzzlePiece);
             int WhitePuzzlePieceColumn = Grid.GetColumn(WhitePuzzlePiece);
             if (PuzzlePieceRow == WhitePuzzlePieceRow || PuzzlePieceColumn == WhitePuzzlePieceColumn)
@@ -323,10 +305,10 @@ namespace Sliding_Puzzle.Classes
                 int PPR = Grid.GetRow(PuzzlePiece);
                 int PPC = Grid.GetColumn(PuzzlePiece);
                 int PPN = int.Parse(tempPiece.Tag.ToString());
-                Debug.Write("Move: " + Moves +"\nPiece being checked: " + PPN + "\nCurrent location: " + "Row: " + PPR + " Column: " + PPC + "\nCorrect location: Row: " + CorrectPuzzleLocations[PPN][0, 0].ToString() + " Column: " + CorrectPuzzleLocations[PPN][1, 0].ToString() + "\n");
+                Debug.Write("Move: " + Moves +"\nPiece being checked: " + PPN + "\nCurrent location: " + "Row: " + PPR + " Column: " + PPC + "\nCorrect location: Row: " + CorrectPuzzleLocations[PuzzleSize - 3][PPN][0, 0].ToString() + " Column: " + CorrectPuzzleLocations[PuzzleSize - 3][PPN][1, 0].ToString() + "\n");
 
                 int[,] location = new int[,] { { PPR }, { PPC } };
-                if (CorrectPuzzleLocations[PPN][0, 0] == location[0, 0] && CorrectPuzzleLocations[PPN][1, 0] == location[1, 0])
+                if (CorrectPuzzleLocations[PuzzleSize - 3][PPN][0, 0] == location[0, 0] && CorrectPuzzleLocations[PuzzleSize - 3][PPN][1, 0] == location[1, 0])
                 {
                     Debug.WriteLine("Piece is correct!\n-*****-");
                     Completed = true;
@@ -365,12 +347,10 @@ namespace Sliding_Puzzle.Classes
             }
             Moves = 0;
             TimeSpent = 0;
-            //GeneratePuzzle();
         }
         public void SolvePuzzle()
         {
             Tree TreeSolver = new Tree(PuzzlePiecesAsInt);
-            
         }
     }
 }

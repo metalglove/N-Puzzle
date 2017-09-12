@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 
 namespace Sliding_Puzzle.Views
 {
-    
     public sealed partial class SlidingPuzzle : Page
     {
         private Classes.SlidingPuzzle Puzzle { get; set; }
@@ -25,7 +24,6 @@ namespace Sliding_Puzzle.Views
         public SlidingPuzzle()
         {
             this.InitializeComponent();
-            
         }
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -43,7 +41,7 @@ namespace Sliding_Puzzle.Views
         }
         private void SetPuzzleTime(object sender, object e)
         {
-            TimerTextBlock.Text = "Speeltijd: " + Puzzle.TimeSpent.ToString();
+            TimerTextBlock.Text = "Time played: " + Puzzle.TimeSpent.ToString();
         }
         private void SetPuzzle()
         {

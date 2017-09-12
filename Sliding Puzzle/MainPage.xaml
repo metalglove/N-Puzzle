@@ -9,7 +9,7 @@
     mc:Ignorable="d">
     <Grid Background="WhiteSmoke" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="175"/>
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -17,34 +17,33 @@
             <RowDefinition Height="9*"/>
         </Grid.RowDefinitions>
         <Button Name="CreatePuzzleFromImage" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,5,0,5" Content="Create A Puzzle" FontSize="13" FontWeight="Bold" Click="CreatePuzzleFromImage_Click"/>
-
         <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Hidden">
-
             <ListView x:Name="lvPuzzles">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Height="160">
+                        <Grid Height="260">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="50"/>
                                 <RowDefinition Height="150"/>
+                                <RowDefinition Height="50"/>
                             </Grid.RowDefinitions>
                             <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="15" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="WrapWholeWords" FontWeight="Bold"/>
-                            <Image Source="{Binding Image}"  Tag="{Binding Folder}" Stretch="Fill" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Tapped="Image_Tapped"/>
+                            <Image Source="{Binding Image}"  Stretch="Fill" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
+                            <Grid Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Content="3" IsEnabled="{Binding IsPuzzleSize3Available}" Tag="{Binding Folder}" Click="Puzzle_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Button Grid.Column="1" Content="4" IsEnabled="{Binding IsPuzzleSize4Available}" Tag="{Binding Folder}" Click="Puzzle_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Button Grid.Column="2" Content="5" IsEnabled="{Binding IsPuzzleSize5Available}" Tag="{Binding Folder}" Click="Puzzle_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            
-            <!-- <StackPanel >
-                <Button Name="BandosPuzzle" Tag="Bandos" Click="Puzzle_Click" Content="Bandos" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,0,0"/>
-                <Button Name="TreePuzzle" Tag="Tree" Click="Puzzle_Click" Content="Tree" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
-                <Button Name="CastlePuzzle" Tag="Castle" Click="Puzzle_Click" Content="Castle" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
-                <Button Name="TrollPuzzle" Tag="Troll" Click="Puzzle_Click" Content="Troll" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
-                <Button Name="KingBlackDragonPuzzle" Tag="King Black Dragon" Click="Puzzle_Click" Content="KBD" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
-                <Button Name="CorporealBeastPuzzle" Tag="Corporeal Beast" Click="Puzzle_Click" Content="Corp" FontSize="30" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
-            </StackPanel>-->
         </ScrollViewer>
-        
         <Frame Grid.Row="1" Grid.Column="1" Name="ContentFrame" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>
 </Page>

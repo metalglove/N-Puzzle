@@ -38,6 +38,7 @@ namespace Sliding_Puzzle.Views
         string imagename = "";
         string imagepath = "";
         int size = 0;
+
         public CreatePuzzle()
         {
             this.InitializeComponent();
@@ -157,7 +158,6 @@ namespace Sliding_Puzzle.Views
                 Content = "Puzzle has succesfully been created!",
                 CloseButtonText = "Ok"
             };
-
             await dg.ShowAsync();
         }
         private async Task<List<WriteableBitmap>> CutImageInPiecesAsync(IRandomAccessStream filestream, int puzzlesize)

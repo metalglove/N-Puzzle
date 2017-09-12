@@ -25,13 +25,10 @@ using System.Threading.Tasks;
 
 namespace Sliding_Puzzle
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
         public ObservableCollection<Puzzle> puzzleList = new ObservableCollection<Puzzle>();
-        public int PuzzleSize = 5;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -41,14 +38,10 @@ namespace Sliding_Puzzle
 
         private void Puzzle_Click(object sender, RoutedEventArgs e)
         {
-            Button send = sender as Button;
-            this.ContentFrame.Navigate(typeof(Views.SlidingPuzzle), new Classes.SlidingPuzzle(PuzzleSize, send.Tag.ToString()));
-        }
-        private void Image_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            Image image = sender as Image;
-            StorageFolder file = (StorageFolder)image.Tag;
-            this.ContentFrame.Navigate(typeof(Views.SlidingPuzzle), new Classes.SlidingPuzzle(5, file, file.DisplayName));
+            Button button = sender as Button;
+            StorageFolder Folder = (StorageFolder)button.Tag;
+            int PuzzleSize = int.Parse(button.Content.ToString());
+            this.ContentFrame.Navigate(typeof(Views.SlidingPuzzle), new Classes.SlidingPuzzle(PuzzleSize, Folder, Folder.DisplayName));
         }
         private void CreatePuzzleFromImage_Click(object sender, RoutedEventArgs e)
         {
@@ -61,7 +54,7 @@ namespace Sliding_Puzzle
             foreach (StorageFolder item in folderList)
             {
                 BitmapImage image = await GetImageFromStorageFolderAsync(item);
-                puzzleList.Add(new Puzzle(item.DisplayName, item, image));
+                puzzleList.Add(new Puzzle(item.DisplayName, item, image, await CheckIfFolderExistsAsync(item, "3"), await CheckIfFolderExistsAsync(item, "4"), await CheckIfFolderExistsAsync(item, "5")));
             }
         }
         private async Task<BitmapImage> GetImageFromStorageFolderAsync(StorageFolder Folder)
@@ -74,21 +67,54 @@ namespace Sliding_Puzzle
             }
             return image;
         }
+        private async Task<bool> CheckIfFolderExistsAsync(StorageFolder Folder, string folderName)
+        {
+            var item = await Folder.TryGetItemAsync(folderName);
+            return item != null;
+        }
     }
 
     public class Puzzle
     {
         private string _Name;
-        public string Name { get { return _Name; } }
+        public string Name
+        {
+            get { return _Name; }
+        }
         private StorageFolder _Folder;
-        public StorageFolder Folder { get { return _Folder; } }
+        public StorageFolder Folder
+        {
+            get { return _Folder; }
+        }
         private BitmapImage _Image;
-        public BitmapImage Image { get { return _Image; } }
-        public Puzzle(string Name, StorageFolder Folder, BitmapImage Image)
+        public BitmapImage Image
+        {
+            get { return _Image; }
+        }
+        private bool _IsPuzzleSize3Available = false;
+        public bool IsPuzzleSize3Available 
+        {
+            get { return _IsPuzzleSize3Available; }
+        }
+        private bool _IsPuzzleSize4Available = false;
+        public bool IsPuzzleSize4Available
+        {
+            get { return _IsPuzzleSize4Available; }
+        }
+        private bool _IsPuzzleSize5Available = false;
+        public bool IsPuzzleSize5Available
+        {
+            get { return _IsPuzzleSize5Available; }
+        }
+
+        public Puzzle(string Name, StorageFolder Folder, BitmapImage Image, bool IsPuzzleSize3Available, bool IsPuzzleSize4Available, bool IsPuzzleSize5Available)
         {
             _Name = Name;
             _Folder = Folder;
             _Image = Image;
+            _IsPuzzleSize3Available = IsPuzzleSize3Available;
+            _IsPuzzleSize4Available = IsPuzzleSize4Available;
+            _IsPuzzleSize5Available = IsPuzzleSize5Available;
         }
     }
 
