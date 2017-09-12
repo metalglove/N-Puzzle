@@ -25,12 +25,12 @@ namespace Sliding_Puzzle.Views
         public SlidingPuzzle()
         {
             this.InitializeComponent();
+            
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             Puzzle = e.Parameter as Classes.SlidingPuzzle;
-            SetPuzzle();
-            StartTimer();
+            Puzzle.GeneratePuzzle();
             base.OnNavigatedTo(e);//
         }
 
@@ -62,6 +62,19 @@ namespace Sliding_Puzzle.Views
         private void SolveButton_Click(object sender, RoutedEventArgs e)
         {
             Puzzle.SolvePuzzle();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            SetPuzzle();
+            StartTimer();
+            
         }
     }
 }

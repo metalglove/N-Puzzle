@@ -75,12 +75,15 @@ namespace Sliding_Puzzle.Classes
             this.PuzzleSize = PuzzleSize;
             this.Folder = Folder;
             this.PuzzleName = PuzzleName;
-            GetAllImages();
+
+          
             //GeneratePuzzle();
         }
+
         #region PuzzleCreation
-        public void GeneratePuzzle()
+        public async void GeneratePuzzle()
         {
+            await GetAllImages();
             CreatePuzzleBoxHolder();
             LoadPuzzleBoxHolder();
         }
@@ -112,6 +115,7 @@ namespace Sliding_Puzzle.Classes
         }
         private void LoadPuzzleBoxHolder()
         {
+           
             int PuzzleCount = (PuzzleSize * PuzzleSize);
             string output = "";
             for (int i = 0; i < PuzzleCount; i++)
@@ -226,12 +230,14 @@ namespace Sliding_Puzzle.Classes
             return image;
 
         }
-        public async void GetAllImages()
+        public async Task GetAllImages()
         {
             List<BitmapImage> images = new List<BitmapImage>();
-            StorageFolder pictureFolder2 = await Folder.GetFolderAsync(PuzzleSize.ToString());
             try
             {
+               
+                StorageFolder pictureFolder2 = await Folder.GetFolderAsync(PuzzleSize.ToString());
+            
                 for (int i = 1; i < 25; i++)
                 {
                     Debug.WriteLine("Image from folder: " + i.ToString());
@@ -250,7 +256,7 @@ namespace Sliding_Puzzle.Classes
                 throw;
             }
             PuzzlePieceImages = images;
-            GeneratePuzzle();
+            //GeneratePuzzle();
         }
         #endregion PuzzleCreation
 
