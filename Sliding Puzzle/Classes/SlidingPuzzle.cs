@@ -63,7 +63,6 @@ namespace Sliding_Puzzle.Classes
         public int TimeSpent { get; private set; }
         private DispatcherTimer PuzzleTimer { get; set; }
         #endregion
-
         public SlidingPuzzle(int PuzzleSize, string PuzzleName)
         {
             this.PuzzleSize = PuzzleSize;
@@ -176,9 +175,13 @@ namespace Sliding_Puzzle.Classes
             PuzzlePiece.VerticalAlignment = VerticalAlignment.Stretch;
             PuzzlePiece.Tag = PuzzlePieceCount;
             ImageBrush brush = new ImageBrush();
-            brush.ImageSource = PuzzlePieceImages[PuzzlePieceCount]; //GetImageFromStorageFolderAsync((PuzzlePieceCount + 1)).Result;//new BitmapImage(new Uri("ms-appx:///SlidingPuzzles/" + PuzzleName +"/" + (PuzzlePieceCount + 1) + ".png", UriKind.RelativeOrAbsolute));
-            //PuzzlePiece.Background = new SolidColorBrush(Colors.Red);//brush;
+            brush.ImageSource = PuzzlePieceImages[PuzzlePieceCount];
+            //brush.ImageSource = GetImageFromStorageFolderAsync((PuzzlePieceCount + 1)).Result;
+            //brush.ImageSource = new BitmapImage(new Uri("ms-appx:///SlidingPuzzles/" + PuzzleName +"/" + (PuzzlePieceCount + 1) + ".png", UriKind.RelativeOrAbsolute));
+            //PuzzlePiece.Background = new SolidColorBrush(Colors.Red);
+            PuzzlePiece.Background = brush;
             Button button = new Button();
+            //button.Background = brush;
             button.VerticalAlignment = VerticalAlignment.Center;
             button.HorizontalAlignment = HorizontalAlignment.Center;
             button.Click += (sender, e) => Move(sender, e, PuzzlePiece);
@@ -217,15 +220,23 @@ namespace Sliding_Puzzle.Classes
         private async Task<BitmapImage> GetImageFromStorageFolderAsync(int puzzlepiece)
         {
             Debug.WriteLine("Image from folder: " + puzzlepiece.ToString());
-            BitmapImage image;// = new BitmapImage();
-            StorageFolder pictureFolder2 = await Folder.GetFolderAsync(PuzzleSize.ToString());
-            StorageFile img = await pictureFolder2.GetFileAsync(puzzlepiece + ".png");
-            /*using (IRandomAccessStream fileStream = img.OpenAsync(FileAccessMode.Read).GetResults())
+            BitmapImage image = new BitmapImage();
+            try
             {
-                image.SetSource(fileStream);
+                StorageFolder pictureFolder2 = await Folder.GetFolderAsync(PuzzleSize.ToString());
+                StorageFile img = await pictureFolder2.GetFileAsync(puzzlepiece + ".png");
+                /*using (IRandomAccessStream fileStream = img.OpenAsync(FileAccessMode.Read).GetResults())
+                {
+                    image.SetSource(fileStream);
+                }
+                return image;*/
+                image = new BitmapImage(new Uri(img.Path, UriKind.Absolute));
             }
-            return image;*/
-            image = new BitmapImage(new Uri(img.Path));
+            catch (Exception ex)
+            {
+                Debug.Write(ex.ToString());
+                throw;
+            }
             
             return image;
 
@@ -235,18 +246,16 @@ namespace Sliding_Puzzle.Classes
             List<BitmapImage> images = new List<BitmapImage>();
             try
             {
-               
                 StorageFolder pictureFolder2 = await Folder.GetFolderAsync(PuzzleSize.ToString());
-            
                 for (int i = 1; i < 25; i++)
                 {
                     Debug.WriteLine("Image from folder: " + i.ToString());
                     StorageFile img = await pictureFolder2.GetFileAsync(i.ToString() + ".png");
-                    BitmapImage image = new BitmapImage(new Uri(img.Path));
-                    //using (IRandomAccessStream fileStream = await img.OpenAsync(FileAccessMode.Read))
-                    //{
-                    //image.SetSource(fileStream);
-                    //}
+                    BitmapImage image = new BitmapImage(new Uri(img.Path, UriKind.Absolute));
+                    using (IRandomAccessStream fileStream = await img.OpenAsync(FileAccessMode.Read))
+                    {
+                        image.SetSource(fileStream);
+                    }
                     images.Add(image);
                 }
             }
@@ -255,6 +264,7 @@ namespace Sliding_Puzzle.Classes
                 Debug.Write(ex.ToString());
                 throw;
             }
+
             PuzzlePieceImages = images;
             //GeneratePuzzle();
         }

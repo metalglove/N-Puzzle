@@ -44,6 +44,12 @@ namespace Sliding_Puzzle
             Button send = sender as Button;
             this.ContentFrame.Navigate(typeof(Views.SlidingPuzzle), new Classes.SlidingPuzzle(PuzzleSize, send.Tag.ToString()));
         }
+        private void Image_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Image image = sender as Image;
+            StorageFolder file = (StorageFolder)image.Tag;
+            this.ContentFrame.Navigate(typeof(Views.SlidingPuzzle), new Classes.SlidingPuzzle(5, file, file.DisplayName));
+        }
         private void CreatePuzzleFromImage_Click(object sender, RoutedEventArgs e)
         {
             this.ContentFrame.Navigate(typeof(Views.CreatePuzzle));
@@ -67,13 +73,6 @@ namespace Sliding_Puzzle
                 image.SetSource(fileStream);
             }
             return image;
-        }
-
-        private void Image_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            Image image = sender as Image;
-            StorageFolder file = (StorageFolder)image.Tag;
-            this.ContentFrame.Navigate(typeof(Views.SlidingPuzzle), new Classes.SlidingPuzzle(5, file, file.DisplayName));
         }
     }
 

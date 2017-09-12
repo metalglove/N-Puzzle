@@ -32,6 +32,7 @@ namespace Sliding_Puzzle.Views
             Puzzle = e.Parameter as Classes.SlidingPuzzle;
             Puzzle.GeneratePuzzle();
             base.OnNavigatedTo(e);//
+            
         }
 
         private void StartTimer()
@@ -55,7 +56,7 @@ namespace Sliding_Puzzle.Views
         }
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            ClearPuzzle();
+            //ClearPuzzle(); temp fuck it button
             SetPuzzle();
         }
 
@@ -66,15 +67,8 @@ namespace Sliding_Puzzle.Views
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-
-            
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
             SetPuzzle();
             StartTimer();
-            
         }
     }
 }
