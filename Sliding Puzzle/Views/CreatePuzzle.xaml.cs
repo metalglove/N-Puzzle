@@ -36,6 +36,7 @@ namespace Sliding_Puzzle.Views
         List<WriteableBitmap> images3 = new List<WriteableBitmap>();
         List<WriteableBitmap> images4 = new List<WriteableBitmap>();
         List<WriteableBitmap> images5 = new List<WriteableBitmap>();
+        List<WriteableBitmap> images6 = new List<WriteableBitmap>();
         BitmapImage image = new BitmapImage();
         StorageFolder ImageFolder;
         StorageFile imagefile;
@@ -55,10 +56,11 @@ namespace Sliding_Puzzle.Views
         }
         private async void btPickImage_Click(object sender, RoutedEventArgs e)
         {
-            if (images3.Count > 0 && images4.Count > 0 && images5.Count > 0)
+            if (images3.Count > 0 && images4.Count > 0 && images5.Count > 0 && images6.Count > 0)
             {
                 images3.Clear();
                 images4.Clear();
+                images5.Clear();
                 images5.Clear();
             }
             var picker = new FileOpenPicker();
@@ -74,16 +76,17 @@ namespace Sliding_Puzzle.Views
                 imagepath = imagefile.Path;
                 using (IRandomAccessStream fileStream = await imagefile.OpenAsync(FileAccessMode.Read))
                 {
-                    image.SetSource(fileStream);
                     images3 = await CutImageInPiecesAsync(fileStream, 3);
                     images4 = await CutImageInPiecesAsync(fileStream, 4);
                     images5 = await CutImageInPiecesAsync(fileStream, 5);
+                    images6 = await CutImageInPiecesAsync(fileStream, 6);
+                    image.SetSource(fileStream);
                     await SaveIRandomAccessStreamToFileAsync(fileStream, imagename);
                     StorageFolder pictureFolder = await KnownFolders.PicturesLibrary.CreateFolderAsync("SlidingPuzzles", CreationCollisionOption.OpenIfExists);
                     ImageFolder = await pictureFolder.GetFolderAsync(imagename);
                     if (puzzleList.Any(puzzle => puzzle.Name != imagename))
                     {
-                        puzzleList.Add(new Classes.Puzzle(ImageFolder.DisplayName, ImageFolder, image, false, false, false));
+                        puzzleList.Add(new Classes.Puzzle(ImageFolder.DisplayName, ImageFolder, image, false, false, false, false));
                     }
                     imgForPuzzle.Source = image;
                     cbPuzzlesizes.IsEnabled = true;
@@ -167,6 +170,12 @@ namespace Sliding_Puzzle.Views
                     images5.ForEach(async image => await SaveBitmapToFileAsync(image, imagename, ++i5, size));
                     puzzleList.First(puzzle => puzzle.Name == imagename).IsPuzzleSize5Available = await CheckIfItemExistsAsync(ImageFolder, "5");
                     break;
+                case 6:
+                    Debug.WriteLine("6");
+                    int i6 = 0;
+                    images6.ForEach(async image => await SaveBitmapToFileAsync(image, imagename, ++i6, size));
+                    puzzleList.First(puzzle => puzzle.Name == imagename).IsPuzzleSize6Available = await CheckIfItemExistsAsync(ImageFolder, "6");
+                    break;
                 default:
                     break;
             }
@@ -188,8 +197,8 @@ namespace Sliding_Puzzle.Views
             {
                 InMemoryRandomAccessStream ras = new InMemoryRandomAccessStream();
                 BitmapEncoder enc = await BitmapEncoder.CreateForTranscodingAsync(ras, decoder);
-                enc.BitmapTransform.ScaledHeight = 500;
-                enc.BitmapTransform.ScaledWidth = 500;
+                enc.BitmapTransform.ScaledHeight = 501;
+                enc.BitmapTransform.ScaledWidth = 501;
                 BitmapBounds bounds = new BitmapBounds();
                 uint size = Convert.ToUInt32(500 / puzzlesize);
                 bounds.Height = size;

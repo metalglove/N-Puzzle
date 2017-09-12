@@ -40,8 +40,14 @@ namespace Sliding_Puzzle.Classes
             get { return _IsPuzzleSize5Available; }
             set { _IsPuzzleSize5Available = value; }
         }
+        private bool _IsPuzzleSize6Available = false;
+        public bool IsPuzzleSize6Available
+        {
+            get { return _IsPuzzleSize6Available; }
+            set { _IsPuzzleSize6Available = value; }
+        }
 
-        public Puzzle(string Name, StorageFolder Folder, BitmapImage Image, bool IsPuzzleSize3Available, bool IsPuzzleSize4Available, bool IsPuzzleSize5Available)
+        public Puzzle(string Name, StorageFolder Folder, BitmapImage Image, bool IsPuzzleSize3Available, bool IsPuzzleSize4Available, bool IsPuzzleSize5Available, bool IsPuzzleSize6Available)
         {
             _Name = Name;
             _Folder = Folder;
@@ -49,6 +55,7 @@ namespace Sliding_Puzzle.Classes
             _IsPuzzleSize3Available = IsPuzzleSize3Available;
             _IsPuzzleSize4Available = IsPuzzleSize4Available;
             _IsPuzzleSize5Available = IsPuzzleSize5Available;
+            _IsPuzzleSize6Available = IsPuzzleSize6Available;
         }
     }
 

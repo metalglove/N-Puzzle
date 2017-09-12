@@ -33,6 +33,7 @@
                     <ComboBoxItem Content="3"/>
                     <ComboBoxItem Content="4"/>
                     <ComboBoxItem Content="5"/>
+                    <ComboBoxItem Content="6"/>
                 </ComboBox>
             </StackPanel>
             <Button IsEnabled="False" Name="btCreateCustomPuzzle" Height="40" HorizontalAlignment="Stretch" Content="Create" FontSize="20" Margin="0,5,0,0" Click="BtCreateCustomPuzzle_ClickAsync"/>

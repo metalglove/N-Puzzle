@@ -57,7 +57,7 @@ namespace Sliding_Puzzle
                     continue;
                 }
                 BitmapImage image = await GetImageFromStorageFolderAsync(item);
-                puzzleList.Add(new Classes.Puzzle(item.DisplayName, item, image, await CheckIfItemExistsAsync(item, "3"), await CheckIfItemExistsAsync(item, "4"), await CheckIfItemExistsAsync(item, "5")));
+                puzzleList.Add(new Classes.Puzzle(item.DisplayName, item, image, await CheckIfItemExistsAsync(item, "3"), await CheckIfItemExistsAsync(item, "4"), await CheckIfItemExistsAsync(item, "5"), await CheckIfItemExistsAsync(item, "6")));
             }
         }
         private async Task<BitmapImage> GetImageFromStorageFolderAsync(StorageFolder Folder)

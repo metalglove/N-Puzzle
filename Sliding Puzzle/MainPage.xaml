@@ -32,13 +32,15 @@
                             <Image Source="{Binding Image}"  Stretch="Fill" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10"/>
                             <Grid Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="40"/>
                                 </Grid.ColumnDefinitions>
                                 <Button Grid.Column="0" Content="3" IsEnabled="{Binding IsPuzzleSize3Available}" Tag="{Binding Folder}" Click="Puzzle_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <Button Grid.Column="1" Content="4" IsEnabled="{Binding IsPuzzleSize4Available}" Tag="{Binding Folder}" Click="Puzzle_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <Button Grid.Column="2" Content="5" IsEnabled="{Binding IsPuzzleSize5Available}" Tag="{Binding Folder}" Click="Puzzle_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Button Grid.Column="3" Content="6" IsEnabled="{Binding IsPuzzleSize6Available}" Tag="{Binding Folder}" Click="Puzzle_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Grid>
                         </Grid>
                     </DataTemplate>
