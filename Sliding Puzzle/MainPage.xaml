@@ -9,11 +9,11 @@
     mc:Ignorable="d">
     <Grid Background="WhiteSmoke" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="9*"/>
         </Grid.RowDefinitions>
         <Button Name="CreatePuzzleFromImage" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,5,0,5" Content="Create A Puzzle" FontSize="13" FontWeight="Bold" Click="CreatePuzzleFromImage_Click"/>
@@ -25,8 +25,8 @@
                     <DataTemplate>
                         <Grid Height="160">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="2*"/>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="150"/>
                             </Grid.RowDefinitions>
                             <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="15" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="WrapWholeWords" FontWeight="Bold"/>
                             <Image Source="{Binding Image}"  Tag="{Binding Folder}" Stretch="Fill" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Tapped="Image_Tapped"/>

@@ -27,14 +27,14 @@ namespace Sliding_Puzzle.Views
             this.InitializeComponent();
             
         }
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             Puzzle = e.Parameter as Classes.SlidingPuzzle;
-            Puzzle.GeneratePuzzle();
-            base.OnNavigatedTo(e);//
-            
+            await Puzzle.GeneratePuzzle();
+            SetPuzzle();
+            StartTimer();
+            base.OnNavigatedTo(e);
         }
-
         private void StartTimer()
         {
             CheckTimeSpent.Interval = TimeSpan.FromMilliseconds(500);
@@ -49,26 +49,20 @@ namespace Sliding_Puzzle.Views
         {
             SlidingPuzzleGrid.Children.Add(Puzzle.GetPuzzle());
         }
-        private void ClearPuzzle()
+        private async Task ClearPuzzleAsync()
         {
             SlidingPuzzleGrid.Children.Clear();
             Puzzle.ResetPuzzle();
+            await Puzzle.GeneratePuzzle();
         }
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        private async void ResetButton_ClickAsync(object sender, RoutedEventArgs e)
         {
-            //ClearPuzzle(); temp fuck it button
+            await ClearPuzzleAsync();
             SetPuzzle();
         }
-
         private void SolveButton_Click(object sender, RoutedEventArgs e)
         {
             Puzzle.SolvePuzzle();
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            SetPuzzle();
-            StartTimer();
         }
     }
 }

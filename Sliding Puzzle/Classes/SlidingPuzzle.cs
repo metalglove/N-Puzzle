@@ -80,7 +80,7 @@ namespace Sliding_Puzzle.Classes
         }
 
         #region PuzzleCreation
-        public async void GeneratePuzzle()
+        public async Task GeneratePuzzle()
         {
             await GetAllImages();
             CreatePuzzleBoxHolder();
@@ -365,7 +365,7 @@ namespace Sliding_Puzzle.Classes
             }
             Moves = 0;
             TimeSpent = 0;
-            GeneratePuzzle();
+            //GeneratePuzzle();
         }
         public void SolvePuzzle()
         {
