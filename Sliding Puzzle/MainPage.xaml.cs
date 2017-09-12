@@ -21,21 +21,20 @@ using Windows.Storage;
 using System.Collections.ObjectModel;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
+using System.ComponentModel;
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace Sliding_Puzzle
 {
     public sealed partial class MainPage : Page
     {
-        public ObservableCollection<Puzzle> puzzleList = new ObservableCollection<Puzzle>();
-
+        public ObservableCollection<Classes.Puzzle> puzzleList = new ObservableCollection<Classes.Puzzle>();
         public MainPage()
         {
             this.InitializeComponent();
-            LoadExistingPuzzlesAsync();
             lvPuzzles.ItemsSource = puzzleList;
+            LoadExistingPuzzlesAsync();
         }
-
         private void Puzzle_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
@@ -45,7 +44,7 @@ namespace Sliding_Puzzle
         }
         private void CreatePuzzleFromImage_Click(object sender, RoutedEventArgs e)
         {
-            this.ContentFrame.Navigate(typeof(Views.CreatePuzzle));
+            this.ContentFrame.Navigate(typeof(Views.CreatePuzzle), puzzleList);
         }
         private async void LoadExistingPuzzlesAsync()
         {
@@ -58,7 +57,7 @@ namespace Sliding_Puzzle
                     continue;
                 }
                 BitmapImage image = await GetImageFromStorageFolderAsync(item);
-                puzzleList.Add(new Puzzle(item.DisplayName, item, image, await CheckIfItemExistsAsync(item, "3"), await CheckIfItemExistsAsync(item, "4"), await CheckIfItemExistsAsync(item, "5")));
+                puzzleList.Add(new Classes.Puzzle(item.DisplayName, item, image, await CheckIfItemExistsAsync(item, "3"), await CheckIfItemExistsAsync(item, "4"), await CheckIfItemExistsAsync(item, "5")));
             }
         }
         private async Task<BitmapImage> GetImageFromStorageFolderAsync(StorageFolder Folder)
@@ -75,50 +74,6 @@ namespace Sliding_Puzzle
         {
             var item = await Folder.TryGetItemAsync(itemName);
             return item != null;
-        }
-    }
-
-    public class Puzzle
-    {
-        private string _Name;
-        public string Name
-        {
-            get { return _Name; }
-        }
-        private StorageFolder _Folder;
-        public StorageFolder Folder
-        {
-            get { return _Folder; }
-        }
-        private BitmapImage _Image;
-        public BitmapImage Image
-        {
-            get { return _Image; }
-        }
-        private bool _IsPuzzleSize3Available = false;
-        public bool IsPuzzleSize3Available 
-        {
-            get { return _IsPuzzleSize3Available; }
-        }
-        private bool _IsPuzzleSize4Available = false;
-        public bool IsPuzzleSize4Available
-        {
-            get { return _IsPuzzleSize4Available; }
-        }
-        private bool _IsPuzzleSize5Available = false;
-        public bool IsPuzzleSize5Available
-        {
-            get { return _IsPuzzleSize5Available; }
-        }
-
-        public Puzzle(string Name, StorageFolder Folder, BitmapImage Image, bool IsPuzzleSize3Available, bool IsPuzzleSize4Available, bool IsPuzzleSize5Available)
-        {
-            _Name = Name;
-            _Folder = Folder;
-            _Image = Image;
-            _IsPuzzleSize3Available = IsPuzzleSize3Available;
-            _IsPuzzleSize4Available = IsPuzzleSize4Available;
-            _IsPuzzleSize5Available = IsPuzzleSize5Available;
         }
     }
 

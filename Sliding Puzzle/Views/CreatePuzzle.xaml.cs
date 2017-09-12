@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Shapes;
 using Windows.UI;
 using Windows.Graphics.Imaging;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace Sliding_Puzzle.Views
@@ -30,20 +31,28 @@ namespace Sliding_Puzzle.Views
     /// </summary>
     public sealed partial class CreatePuzzle : Page
     {
+        public ObservableCollection<Classes.Puzzle> puzzleList;
+
         List<WriteableBitmap> images3 = new List<WriteableBitmap>();
         List<WriteableBitmap> images4 = new List<WriteableBitmap>();
         List<WriteableBitmap> images5 = new List<WriteableBitmap>();
         BitmapImage image = new BitmapImage();
+        StorageFolder ImageFolder;
         StorageFile imagefile;
         string imagename = "";
         string imagepath = "";
         int size = 0;
-
+        
         public CreatePuzzle()
         {
             this.InitializeComponent();
         }
-
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            puzzleList = e.Parameter as ObservableCollection<Classes.Puzzle>;
+            
+            base.OnNavigatedTo(e);
+        }
         private async void btPickImage_Click(object sender, RoutedEventArgs e)
         {
             if (images3.Count > 0 && images4.Count > 0 && images5.Count > 0)
@@ -70,6 +79,12 @@ namespace Sliding_Puzzle.Views
                     images4 = await CutImageInPiecesAsync(fileStream, 4);
                     images5 = await CutImageInPiecesAsync(fileStream, 5);
                     await SaveIRandomAccessStreamToFileAsync(fileStream, imagename);
+                    StorageFolder pictureFolder = await KnownFolders.PicturesLibrary.CreateFolderAsync("SlidingPuzzles", CreationCollisionOption.OpenIfExists);
+                    ImageFolder = await pictureFolder.GetFolderAsync(imagename);
+                    if (puzzleList.Any(puzzle => puzzle.Name != imagename))
+                    {
+                        puzzleList.Add(new Classes.Puzzle(ImageFolder.DisplayName, ImageFolder, image, false, false, false));
+                    }
                     imgForPuzzle.Source = image;
                     cbPuzzlesizes.IsEnabled = true;
                 }
@@ -138,16 +153,19 @@ namespace Sliding_Puzzle.Views
                     Debug.WriteLine("3");
                     int i3 = 0;
                     images3.ForEach(async image => await SaveBitmapToFileAsync(image, imagename, ++i3, size));
+                    puzzleList.First(puzzle => puzzle.Name == imagename).IsPuzzleSize3Available = await CheckIfItemExistsAsync(ImageFolder, "3");
                     break;
                 case 4:
                     Debug.WriteLine("4");
                     int i4 = 0;
                     images4.ForEach(async image => await SaveBitmapToFileAsync(image, imagename, ++i4, size));
+                    puzzleList.First(puzzle => puzzle.Name == imagename).IsPuzzleSize4Available = await CheckIfItemExistsAsync(ImageFolder, "4");
                     break;
                 case 5:
                     Debug.WriteLine("5");
                     int i5 = 0;
                     images5.ForEach(async image => await SaveBitmapToFileAsync(image, imagename, ++i5, size));
+                    puzzleList.First(puzzle => puzzle.Name == imagename).IsPuzzleSize5Available = await CheckIfItemExistsAsync(ImageFolder, "5");
                     break;
                 default:
                     break;
@@ -237,6 +255,11 @@ namespace Sliding_Puzzle.Views
                 encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore, (uint)wb.PixelWidth, (uint)wb.PixelHeight, 96, 96, pixels);
                 await encoder.FlushAsync();
             }
+        }
+        private async Task<bool> CheckIfItemExistsAsync(StorageFolder Folder, string itemName)
+        {
+            var item = await Folder.TryGetItemAsync(itemName);
+            return item != null;
         }
     }
 }

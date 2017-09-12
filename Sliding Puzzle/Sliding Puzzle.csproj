@@ -103,6 +103,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Classes\Puzzle.cs" />
     <Compile Include="Views\CreatePuzzle.xaml.cs">
       <DependentUpon>CreatePuzzle.xaml</DependentUpon>
     </Compile>
