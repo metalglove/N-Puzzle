@@ -53,8 +53,12 @@ namespace Sliding_Puzzle
             IReadOnlyList<StorageFolder> folderList = await pictureFolder.GetFoldersAsync();
             foreach (StorageFolder item in folderList)
             {
+                if (await CheckIfItemExistsAsync(item, item.DisplayName + ".png") == false)
+                {
+                    continue;
+                }
                 BitmapImage image = await GetImageFromStorageFolderAsync(item);
-                puzzleList.Add(new Puzzle(item.DisplayName, item, image, await CheckIfFolderExistsAsync(item, "3"), await CheckIfFolderExistsAsync(item, "4"), await CheckIfFolderExistsAsync(item, "5")));
+                puzzleList.Add(new Puzzle(item.DisplayName, item, image, await CheckIfItemExistsAsync(item, "3"), await CheckIfItemExistsAsync(item, "4"), await CheckIfItemExistsAsync(item, "5")));
             }
         }
         private async Task<BitmapImage> GetImageFromStorageFolderAsync(StorageFolder Folder)
@@ -67,9 +71,9 @@ namespace Sliding_Puzzle
             }
             return image;
         }
-        private async Task<bool> CheckIfFolderExistsAsync(StorageFolder Folder, string folderName)
+        private async Task<bool> CheckIfItemExistsAsync(StorageFolder Folder, string itemName)
         {
-            var item = await Folder.TryGetItemAsync(folderName);
+            var item = await Folder.TryGetItemAsync(itemName);
             return item != null;
         }
     }
