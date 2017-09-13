@@ -362,7 +362,19 @@ namespace Sliding_Puzzle.Classes
         }
         public void SolvePuzzle()
         {
-            Tree TreeSolver = new Tree(PuzzlePiecesAsInt);
+            if (PuzzleSize == 5)
+            {
+                Solvers.Tree TreeSolver = new Solvers.Tree(PuzzlePiecesAsInt);
+            }
+            else if(PuzzleSize == 3)
+            {
+                Solvers.SolverV2 solver = new Solvers.SolverV2(PuzzlePiecesAsInt);
+            }
+            else
+            {
+                ContentDialog dg = new ContentDialog() { Title = "Warning", Content = "Solver only implemented for puzzlesize of 5", CloseButtonText = "Ok" };
+                var x = dg.ShowAsync();
+            }
         }
     }
 }

@@ -7,16 +7,8 @@ using System.Threading.Tasks;
 using MoreLinq;
 using Windows.System.Threading;
 using System.Threading;
-namespace Sliding_Puzzle.Classes
+namespace Sliding_Puzzle.Classes.Solvers
 {
-    public enum Direction
-    {
-        Left,
-        Right,
-        Up,
-        Down,
-        None
-    }
     class Node
     {
         #region Properties
@@ -142,20 +134,20 @@ namespace Sliding_Puzzle.Classes
         }
         private List<int> CopyState(List<int> State)
         {
-            List<int> NewState = new List<int>();
-            foreach (int item in State)
-            {
-                NewState.Add(item);
-            }
+            List<int> NewState = State.ToList();//new List<int>();
+            //foreach (int item in State)
+            //{
+            //    NewState.Add(item);
+            //}
             return NewState;
         }
         private List<Direction> CopyMoves(List<Direction> moves)
         {
-            List<Direction> CopyOfMoves = new List<Direction>();
-            foreach (Direction Move in moves)
-            {
-                CopyOfMoves.Add(Move);
-            }
+            List<Direction> CopyOfMoves = moves.ToList();// new List<Direction>();
+            //foreach (Direction Move in moves)
+            //{
+            //   CopyOfMoves.Add(Move);
+            //}
             return CopyOfMoves;
         }
         private void PrintState(List<int> State)
@@ -367,7 +359,7 @@ namespace Sliding_Puzzle.Classes
         private List<int> NodeIds = new List<int>();
         private Random Random = new Random();
         //private List<List<int>> VisitedStates = new List<List<int>>();
-        private List<string> VisitedStates = new List<string>();
+        private List<string> VisitedStates = new List<string>();//has a flaw
         #endregion Properties
         public Tree(List<int> StartingState)
         {
@@ -444,7 +436,7 @@ namespace Sliding_Puzzle.Classes
             string state = "";
             foreach (int item in startingState)
             {
-                state = state + item;
+                state = state + item + ", ";
             }
             return state;
         }

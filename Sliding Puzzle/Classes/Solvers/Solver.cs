@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sliding_Puzzle.Classes
+namespace Sliding_Puzzle.Classes.Solvers
 {
     class Solver
     {
