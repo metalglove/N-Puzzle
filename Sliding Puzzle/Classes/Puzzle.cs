@@ -1,12 +1,13 @@
 ﻿using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Sliding_Puzzle.Classes
 {
     public class Puzzle : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
         private string _Name;
         public string Name
         {
@@ -26,25 +27,31 @@ namespace Sliding_Puzzle.Classes
         public bool IsPuzzleSize3Available 
         {
             get { return _IsPuzzleSize3Available; }
-            set { _IsPuzzleSize3Available = value; }
+            set { _IsPuzzleSize3Available = value; NotifyPropertyChanged(); }
         }
         private bool _IsPuzzleSize4Available = false;
         public bool IsPuzzleSize4Available
         {
             get { return _IsPuzzleSize4Available; }
-            set { _IsPuzzleSize4Available = value; }
+            set { _IsPuzzleSize4Available = value; NotifyPropertyChanged(); }
         }
         private bool _IsPuzzleSize5Available = false;
         public bool IsPuzzleSize5Available
         {
             get { return _IsPuzzleSize5Available; }
-            set { _IsPuzzleSize5Available = value; }
+            set { _IsPuzzleSize5Available = value; NotifyPropertyChanged(); }
         }
         private bool _IsPuzzleSize6Available = false;
         public bool IsPuzzleSize6Available
         {
             get { return _IsPuzzleSize6Available; }
-            set { _IsPuzzleSize6Available = value; }
+            set { _IsPuzzleSize6Available = value; NotifyPropertyChanged(); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public Puzzle(string Name, StorageFolder Folder, BitmapImage Image, bool IsPuzzleSize3Available, bool IsPuzzleSize4Available, bool IsPuzzleSize5Available, bool IsPuzzleSize6Available)

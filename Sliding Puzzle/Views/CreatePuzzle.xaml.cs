@@ -31,7 +31,7 @@ namespace Sliding_Puzzle.Views
     /// </summary>
     public sealed partial class CreatePuzzle : Page
     {
-        public ObservableCollection<Classes.Puzzle> puzzleList;
+       // public Classes.PuzzleList puzzleList;
 
         List<WriteableBitmap> images3 = new List<WriteableBitmap>();
         List<WriteableBitmap> images4 = new List<WriteableBitmap>();
@@ -50,7 +50,7 @@ namespace Sliding_Puzzle.Views
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            puzzleList = e.Parameter as ObservableCollection<Classes.Puzzle>;
+            //puzzleList = e.Parameter as Classes.PuzzleList;
             
             base.OnNavigatedTo(e);
         }
@@ -61,7 +61,7 @@ namespace Sliding_Puzzle.Views
                 images3.Clear();
                 images4.Clear();
                 images5.Clear();
-                images5.Clear();
+                images6.Clear();
             }
             var picker = new FileOpenPicker();
             picker.ViewMode = PickerViewMode.Thumbnail;
@@ -84,9 +84,9 @@ namespace Sliding_Puzzle.Views
                     await SaveIRandomAccessStreamToFileAsync(fileStream, imagename);
                     StorageFolder pictureFolder = await KnownFolders.PicturesLibrary.CreateFolderAsync("SlidingPuzzles", CreationCollisionOption.OpenIfExists);
                     ImageFolder = await pictureFolder.GetFolderAsync(imagename);
-                    if (puzzleList.Any(puzzle => puzzle.Name != imagename))
+                    if (Classes.PuzzleList.Instance.Any(puzzle => puzzle.Name != imagename))
                     {
-                        puzzleList.Add(new Classes.Puzzle(ImageFolder.DisplayName, ImageFolder, image, false, false, false, false));
+                        Classes.PuzzleList.Instance.Add(new Classes.Puzzle(ImageFolder.DisplayName, ImageFolder, image, false, false, false, false));
                     }
                     imgForPuzzle.Source = image;
                     cbPuzzlesizes.IsEnabled = true;
@@ -150,31 +150,40 @@ namespace Sliding_Puzzle.Views
         }
         private async void BtCreateCustomPuzzle_ClickAsync(object sender, RoutedEventArgs e)
         {
+            bool result = false;
             switch (size)
             {
                 case 3:
                     Debug.WriteLine("3");
                     int i3 = 0;
                     images3.ForEach(async image => await SaveBitmapToFileAsync(image, imagename, ++i3, size));
-                    puzzleList.First(puzzle => puzzle.Name == imagename).IsPuzzleSize3Available = await CheckIfItemExistsAsync(ImageFolder, "3");
+                    if (Classes.PuzzleList.Instance.Any(puzzle => puzzle.Name == imagename))
+                        while (result == false) { result = await CheckIfItemExistsAsync(ImageFolder, "3"); }
+                        Classes.PuzzleList.Instance.First(puzzle => puzzle.Name == imagename).IsPuzzleSize3Available = result;
                     break;
                 case 4:
                     Debug.WriteLine("4");
                     int i4 = 0;
                     images4.ForEach(async image => await SaveBitmapToFileAsync(image, imagename, ++i4, size));
-                    puzzleList.First(puzzle => puzzle.Name == imagename).IsPuzzleSize4Available = await CheckIfItemExistsAsync(ImageFolder, "4");
+                    if (Classes.PuzzleList.Instance.Any(puzzle => puzzle.Name == imagename))
+                        while (result == false) { result = await CheckIfItemExistsAsync(ImageFolder, "4"); }
+                        Classes.PuzzleList.Instance.First(puzzle => puzzle.Name == imagename).IsPuzzleSize4Available = result;
                     break;
                 case 5:
                     Debug.WriteLine("5");
                     int i5 = 0;
                     images5.ForEach(async image => await SaveBitmapToFileAsync(image, imagename, ++i5, size));
-                    puzzleList.First(puzzle => puzzle.Name == imagename).IsPuzzleSize5Available = await CheckIfItemExistsAsync(ImageFolder, "5");
+                    if (Classes.PuzzleList.Instance.Any(puzzle => puzzle.Name == imagename))
+                        while (result == false) { result = await CheckIfItemExistsAsync(ImageFolder, "5"); }
+                        Classes.PuzzleList.Instance.First(puzzle => puzzle.Name == imagename).IsPuzzleSize5Available = result;
                     break;
                 case 6:
                     Debug.WriteLine("6");
                     int i6 = 0;
                     images6.ForEach(async image => await SaveBitmapToFileAsync(image, imagename, ++i6, size));
-                    puzzleList.First(puzzle => puzzle.Name == imagename).IsPuzzleSize6Available = await CheckIfItemExistsAsync(ImageFolder, "6");
+                    if(Classes.PuzzleList.Instance.Any(puzzle => puzzle.Name == imagename))
+                        while (result == false) { result = await CheckIfItemExistsAsync(ImageFolder, "6"); }
+                        Classes.PuzzleList.Instance.First(puzzle => puzzle.Name == imagename).IsPuzzleSize6Available = result;
                     break;
                 default:
                     break;

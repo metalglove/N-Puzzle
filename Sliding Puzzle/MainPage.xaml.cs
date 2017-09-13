@@ -28,11 +28,11 @@ namespace Sliding_Puzzle
 {
     public sealed partial class MainPage : Page
     {
-        public ObservableCollection<Classes.Puzzle> puzzleList = new ObservableCollection<Classes.Puzzle>();
+
         public MainPage()
         {
             this.InitializeComponent();
-            lvPuzzles.ItemsSource = puzzleList;
+            lvPuzzles.ItemsSource = Classes.PuzzleList.Instance;
             LoadExistingPuzzlesAsync();
         }
         private void Puzzle_Click(object sender, RoutedEventArgs e)
@@ -44,7 +44,7 @@ namespace Sliding_Puzzle
         }
         private void CreatePuzzleFromImage_Click(object sender, RoutedEventArgs e)
         {
-            this.ContentFrame.Navigate(typeof(Views.CreatePuzzle), puzzleList);
+            this.ContentFrame.Navigate(typeof(Views.CreatePuzzle), Classes.PuzzleList.Instance);
         }
         private async void LoadExistingPuzzlesAsync()
         {
@@ -57,7 +57,7 @@ namespace Sliding_Puzzle
                     continue;
                 }
                 BitmapImage image = await GetImageFromStorageFolderAsync(item);
-                puzzleList.Add(new Classes.Puzzle(item.DisplayName, item, image, await CheckIfItemExistsAsync(item, "3"), await CheckIfItemExistsAsync(item, "4"), await CheckIfItemExistsAsync(item, "5"), await CheckIfItemExistsAsync(item, "6")));
+                Classes.PuzzleList.Instance.Add(new Classes.Puzzle(item.DisplayName, item, image, await CheckIfItemExistsAsync(item, "3"), await CheckIfItemExistsAsync(item, "4"), await CheckIfItemExistsAsync(item, "5"), await CheckIfItemExistsAsync(item, "6")));
             }
         }
         private async Task<BitmapImage> GetImageFromStorageFolderAsync(StorageFolder Folder)
