@@ -27,33 +27,72 @@ namespace Sliding_Puzzle.Classes.Solvers
         public List<Node> closedList = new List<Node>();
         private List<int> _PuzzleStartState;
         public List<int> PuzzleStartState { get { return _PuzzleStartState; } private set { _PuzzleStartState = value; StartingNode = new Node() { PuzzleState = _PuzzleStartState, Direction = Direction.None }; } }
-        public List<int> PuzzleEndState { get; private set; } = new List<int>()
-        {
-            0, 1, 2,
-            3, 4, 5,
-            6, 7, 8
-        };
-        private readonly int[][,] CorrectPuzzlePieceLocations = new int[][,]
-        {
-            new int[,]{ { 0 }, { 0 } }, new int[,]{ { 0 }, { 1 } }, new int[,]{ { 0 }, { 2 } },
-            new int[,]{ { 1 }, { 0 } }, new int[,]{ { 1 }, { 1 } }, new int[,]{ { 1 }, { 2 } },
-            new int[,]{ { 2 }, { 0 } }, new int[,]{ { 2 }, { 1 } }, new int[,]{ { 2 }, { 2 } }// white puzzle piece
-        };
+        public List<int> PuzzleEndState { get; private set; } = new List<int>();
+        private List<int[,]> CorrectPuzzlePieceLocations { get; set; } = new List<int[,]>();
         public Node StartingNode { get; set; }
         public Node EndingNode { get; set; }
+        private int MoveablePiece { get; set; }
+        private int PuzzleSize { get; set; }
+        public List<int> LeftList { get; set; } = new List<int>();
+        public List<int> RightList { get; set; } = new List<int>();
+        public List<int> UpList { get; set; } = new List<int>();
+        public List<int> DownList { get; set; } = new List<int>();
         #endregion Properties
 
         #region Constructors
-        public Astar(List<int> StartingState)
+        public Astar(List<int> StartingState, int Puzzlesize)
         {
+            PuzzleSize = Puzzlesize;
             PuzzleStartState = StartingState;
-        }
-        public Astar(List<int> StartingState, List<int> EndingState)
-        {
-            PuzzleStartState = StartingState;
-            PuzzleEndState = EndingState;
+            PuzzleEndState = CalculateEndState();
+            MoveablePiece = PuzzleEndState.Last();
+            CalculatePuzzleBounds();
+            CalculateCorrectPuzzlePieceLocations();
         }
         #endregion Constructors
+
+        #region PuzzleSetup
+        private void CalculateCorrectPuzzlePieceLocations()
+        {
+            List<int[,]> MultiDimensionalList = new List<int[,]>();
+            for (int i = 0; i < PuzzleSize; i++)
+            {
+                for (int j = 0; j < PuzzleSize; j++)
+                {
+                    MultiDimensionalList.Add(new int[,] { { i }, { j } });
+                }
+            }
+            CorrectPuzzlePieceLocations = MultiDimensionalList;
+        }
+        private void CalculatePuzzleBounds()
+        {
+            for (int i = PuzzleSize - 1; i < PuzzleEndState.Count; i += PuzzleSize)
+            {
+                RightList.Add(i);
+            }
+            for (int i = 0; i < PuzzleEndState.Count; i += PuzzleSize)
+            {
+                LeftList.Add(i);
+            }
+            for (int i = 0; i < PuzzleSize; i++)
+            {
+                UpList.Add(i);
+            }
+            for (int i = PuzzleEndState.Count - PuzzleSize; i < PuzzleEndState.Count; i++)
+            {
+                DownList.Add(i);
+            }
+        }
+        private List<int> CalculateEndState()
+        {
+            List<int> NewPuzzleEndState = new List<int>();
+            for (int i = 0; i < (PuzzleSize * PuzzleSize); i++)
+            {
+                NewPuzzleEndState.Add(i);
+            }
+            return NewPuzzleEndState;
+        }
+        #endregion PuzzleSetup
 
         public List<Direction> FindPath()
         {
@@ -136,14 +175,14 @@ namespace Sliding_Puzzle.Classes.Solvers
             int LeftOfWhitePuzzlePieceLocation = new int();
             foreach (int item in CurrentPuzzleState)
             {
-                if (item == 8)
+                if (item == MoveablePiece)
                 {
                     WhitePuzzlePieceLocation = Location;
                     LeftOfWhitePuzzlePieceLocation = Location - 1;
                 }
                 Location++;
             }
-            if (WhitePuzzlePieceLocation != 0 && WhitePuzzlePieceLocation != 3 && WhitePuzzlePieceLocation != 6)
+            if (!LeftList.Contains(WhitePuzzlePieceLocation))
             {
                 CurrentPuzzleState = SwapLocation(CurrentPuzzleState, WhitePuzzlePieceLocation, LeftOfWhitePuzzlePieceLocation);
                 LeftOfNode = SetNodeInfo(LeftOfNode, CurrentPuzzleState);
@@ -171,14 +210,14 @@ namespace Sliding_Puzzle.Classes.Solvers
             int RightOfWhitePuzzlePieceLocation = new int();
             foreach (int item in CurrentPuzzleState)
             {
-                if (item == 8)
+                if (item == MoveablePiece)
                 {
                     WhitePuzzlePieceLocation = Location;
                     RightOfWhitePuzzlePieceLocation = Location + 1;
                 }
                 Location++;
             }
-            if (WhitePuzzlePieceLocation != 2 && WhitePuzzlePieceLocation != 5 && WhitePuzzlePieceLocation != 8)
+            if (!RightList.Contains(WhitePuzzlePieceLocation))
             {
                 CurrentPuzzleState = SwapLocation(CurrentPuzzleState, WhitePuzzlePieceLocation, RightOfWhitePuzzlePieceLocation);
                 RightOfNode = SetNodeInfo(RightOfNode, CurrentPuzzleState);
@@ -206,14 +245,14 @@ namespace Sliding_Puzzle.Classes.Solvers
             int UpOfWhitePuzzlePieceLocation = new int();
             foreach (int item in CurrentPuzzleState)
             {
-                if (item == 8)
+                if (item == MoveablePiece)
                 {
                     WhitePuzzlePieceLocation = Location;
-                    UpOfWhitePuzzlePieceLocation = Location - 3;
+                    UpOfWhitePuzzlePieceLocation = Location - PuzzleSize;
                 }
                 Location++;
             }
-            if (WhitePuzzlePieceLocation != 0 && WhitePuzzlePieceLocation != 1 && WhitePuzzlePieceLocation != 2)
+            if (!UpList.Contains(WhitePuzzlePieceLocation))
             {
                 CurrentPuzzleState = SwapLocation(CurrentPuzzleState, WhitePuzzlePieceLocation, UpOfWhitePuzzlePieceLocation);
                 UpOfNode = SetNodeInfo(UpOfNode, CurrentPuzzleState);
@@ -241,14 +280,14 @@ namespace Sliding_Puzzle.Classes.Solvers
             int DownOfWhitePuzzlePieceLocation = new int();
             foreach (int item in CurrentPuzzleState)
             {
-                if (item == 8)
+                if (item == MoveablePiece)
                 {
                     WhitePuzzlePieceLocation = Location;
-                    DownOfWhitePuzzlePieceLocation = Location + 3;
+                    DownOfWhitePuzzlePieceLocation = Location + PuzzleSize;
                 }
                 Location++;
             }
-            if (WhitePuzzlePieceLocation != 6 && WhitePuzzlePieceLocation != 7 && WhitePuzzlePieceLocation != 8)
+            if (!DownList.Contains(WhitePuzzlePieceLocation))
             {
                 CurrentPuzzleState = SwapLocation(CurrentPuzzleState, WhitePuzzlePieceLocation, DownOfWhitePuzzlePieceLocation);
                 DownOfNode = SetNodeInfo(DownOfNode, CurrentPuzzleState);
