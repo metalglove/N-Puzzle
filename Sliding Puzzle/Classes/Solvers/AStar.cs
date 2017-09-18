@@ -54,6 +54,7 @@ namespace Sliding_Puzzle.Classes.Solvers
             PuzzleEndState = EndingState;
         }
         #endregion Constructors
+
         public List<Direction> FindPath()
         {
             List<Direction> Moves = new List<Direction>();
@@ -64,7 +65,7 @@ namespace Sliding_Puzzle.Classes.Solvers
                 Moves.Add(node.Direction);
                 node = node.ParentNode;
             }
-            //Moves.Reverse();
+            Moves.Reverse();
             return Moves;
         }
         private void Searcher(Node currentNode)
@@ -73,7 +74,7 @@ namespace Sliding_Puzzle.Classes.Solvers
             while (EndingNode == null)
             {
                 int LowestValue = openList.Min(item => item.Value);
-                Node BestValueNode = openList.FindAll(node => node.Value.Equals(LowestValue)).First();//OrderBy(node => node.Length).First();
+                Node BestValueNode = openList.FindAll(node => node.Value.Equals(LowestValue)).First();
                 openList.Remove(BestValueNode);
                 List<Node> possibleNodes = GetPossibleNodes(BestValueNode);
                 closedList.Add(BestValueNode);
@@ -270,8 +271,7 @@ namespace Sliding_Puzzle.Classes.Solvers
         #region Events
         private Node SetNodeInfo(Node CurrentNode, List<int> CurrentPuzzleState)
         {
-            CurrentNode.Distance = CalculateDistance(CurrentPuzzleState) + CalculateDistanceByMisplacedPuzzlePieces(CurrentPuzzleState);
-            //CurrentNode.Distance = CalculateDistanceByMisplacedPuzzlePieces(CurrentPuzzleState);
+            CurrentNode.Distance = CalculateDistance(CurrentPuzzleState);
             CurrentNode.Value = CurrentNode.Distance + CurrentNode.Length;
             CurrentNode.PuzzleState = CurrentPuzzleState;
             CurrentNode.State = NodeState.Open;
@@ -314,21 +314,12 @@ namespace Sliding_Puzzle.Classes.Solvers
                     SecondNumber = NumberLocation[1, 0] - CorrectNumberLocation[1, 0];
                 }
                 CalculatedDistanceFromSolution += FirstNumber + SecondNumber;
-            }
-            return CalculatedDistanceFromSolution;
-        }
-        private int CalculateDistanceByMisplacedPuzzlePieces(List<int> currentPuzzleState)
-        {
-            int Distance = 0;
-            for (int i = 0; i < currentPuzzleState.Count; i++)
-            {
-                if (!currentPuzzleState[i].Equals(PuzzleEndState[i]))
+                if ((FirstNumber + SecondNumber) > 0)
                 {
-                    Distance++;
+                    CalculatedDistanceFromSolution++;
                 }
             }
-
-            return Distance;
+            return CalculatedDistanceFromSolution;
         }
         private bool CheckCompletion(List<int> list)
         {

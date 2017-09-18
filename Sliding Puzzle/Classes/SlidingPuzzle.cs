@@ -20,7 +20,6 @@ namespace Sliding_Puzzle.Classes
     class SlidingPuzzle
     {
         #region PuzzleSetup
-        private int InversionsDecider;
         private int _PuzzleSize;
         public int PuzzleSize
         {
@@ -28,23 +27,6 @@ namespace Sliding_Puzzle.Classes
             private set
             {
                 _PuzzleSize = value;
-                switch (_PuzzleSize)
-                {
-                    case 3:
-                        InversionsDecider = 8;
-                        break;
-                    case 4:
-                        InversionsDecider = 15;
-                        break;
-                    case 5:
-                        InversionsDecider = 24;
-                        break;
-                    case 6:
-                        InversionsDecider = 35;
-                        break;
-                    default:
-                        break;
-                }
             }
         }
         public string PuzzleName { get; set; }
@@ -94,6 +76,7 @@ namespace Sliding_Puzzle.Classes
 
         #region PuzzleGame
         public int Moves { get; private set; }
+        private List<Direction> Directions { get; set; } = new List<Direction>();
         public int TimeSpent { get; private set; }
         private DispatcherTimer PuzzleTimer { get; set; }
         #endregion
@@ -366,13 +349,12 @@ namespace Sliding_Puzzle.Classes
             else if(PuzzleSize == 3)
             {
                 DateTime StartTime = DateTime.Now;
-                Solvers.Astar aStar = new Astar(PuzzlePiecesAsInt);
-                List<Direction> Directions = aStar.FindPath();
+                Astar aStar = new Astar(PuzzlePiecesAsInt);
+                Directions = aStar.FindPath();
                 DateTime EndingTime = DateTime.Now;
                 var diff = EndingTime.Subtract(StartTime);
                 var res = String.Format("Uren: {0} Minuten: {1} Seconden: {2} Milliseconden: {3}", diff.Hours, diff.Minutes, diff.Seconds, diff.Milliseconds);
                 Debug.WriteLine(res);
-
                 Debug.WriteLine("Puzzle solved");
                 foreach (Direction Direction in Directions)
                 {
@@ -384,6 +366,10 @@ namespace Sliding_Puzzle.Classes
                 ContentDialog dg = new ContentDialog() { Title = "Warning", Content = "Solver only implemented for puzzlesize of 3", CloseButtonText = "Ok" };
                 var x = dg.ShowAsync();
             }
+        }
+        public List<Direction> GetSolvingMoves()
+        {
+            return Directions;
         }
     }
 }

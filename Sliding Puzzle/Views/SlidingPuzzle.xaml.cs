@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Sliding_Puzzle.Classes;
 using System.Threading.Tasks;
+using Sliding_Puzzle.Classes.Solvers;
 
 namespace Sliding_Puzzle.Views
 {
@@ -21,6 +22,8 @@ namespace Sliding_Puzzle.Views
     {
         private Classes.SlidingPuzzle Puzzle { get; set; }
         private DispatcherTimer CheckTimeSpent = new DispatcherTimer();
+        private List<Direction> Moves = new List<Direction>();
+        private Grid PuzzleGrid { get; set; }
         public SlidingPuzzle()
         {
             this.InitializeComponent();
@@ -45,11 +48,13 @@ namespace Sliding_Puzzle.Views
         }
         private void SetPuzzle()
         {
-            SlidingPuzzleGrid.Children.Add(Puzzle.GetPuzzle());
+            PuzzleGrid = Puzzle.GetPuzzle();
+            Grid.SetColumn(PuzzleGrid, 0);
+            SlidingPuzzleGrid.Children.Add(PuzzleGrid);
         }
         private async Task ClearPuzzleAsync()
         {
-            SlidingPuzzleGrid.Children.Clear();
+            SlidingPuzzleGrid.Children.Remove(PuzzleGrid);
             Puzzle.ResetPuzzle();
             await Puzzle.GeneratePuzzle();
         }
@@ -57,10 +62,17 @@ namespace Sliding_Puzzle.Views
         {
             await ClearPuzzleAsync();
             SetPuzzle();
+            lsMoves.Items.Clear();
         }
         private void SolveButton_Click(object sender, RoutedEventArgs e)
         {
             Puzzle.SolvePuzzle();
+            Moves = Puzzle.GetSolvingMoves();
+            lsMoves.Items.Clear();
+            foreach (Direction item in Moves)
+            {
+                lsMoves.Items.Add(item.ToString());
+            }
         }
     }
 }
