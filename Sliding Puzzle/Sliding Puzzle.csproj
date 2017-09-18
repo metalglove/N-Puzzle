@@ -99,8 +99,6 @@
     <Compile Include="Classes\PuzzleList.cs" />
     <Compile Include="Classes\SlidingPuzzle.cs" />
     <Compile Include="Classes\Solvers\Direction.cs" />
-    <Compile Include="Classes\Solvers\Solver.cs" />
-    <Compile Include="Classes\Solvers\SolverV2.cs" />
     <Compile Include="Classes\Solvers\Tree.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

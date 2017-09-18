@@ -1,4 +1,5 @@
 ﻿using MoreLinq;
+using Sliding_Puzzle.Classes.Solvers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -216,22 +217,18 @@ namespace Sliding_Puzzle.Classes
         private bool CheckSolvability()
         {
             int inversions = 0;
-            for (int i = 0; i < PuzzlePiecesAsInt.Count - 1; i++)
+            List<int> PuzzlePiecesAsIntWithOut8 = PuzzlePiecesAsInt.ToList();
+            PuzzlePiecesAsIntWithOut8.Remove(8);
+            for (int i = 0; i < PuzzlePiecesAsIntWithOut8.Count; i++)
             {
                 // Check if a larger number exists after the current
                 // place in the array, if so increment inversions.
-                for (int j = i + 1; j < PuzzlePiecesAsInt.Count; j++)
+                for (int j = i + 1; j < PuzzlePiecesAsIntWithOut8.Count; j++)
                 {
-                    if (PuzzlePiecesAsInt[i] > PuzzlePiecesAsInt[j])
+                    if (PuzzlePiecesAsIntWithOut8[i] > PuzzlePiecesAsIntWithOut8[j])
                     {
                         inversions++;
                     }
-                }
-                // Determine if the distance of the blank space from the bottom 
-                // right is even or odd, and increment inversions if it is odd.
-                if (PuzzlePiecesAsInt[i] == InversionsDecider && i % 2 == 1)
-                {
-                    inversions++;
                 }
             }
             // If inversions is even, the puzzle is solvable.
@@ -364,15 +361,27 @@ namespace Sliding_Puzzle.Classes
         {
             if (PuzzleSize == 5)
             {
-                Solvers.Tree TreeSolver = new Solvers.Tree(PuzzlePiecesAsInt);
+                Solvers.Special.Tree TreeSolver = new Solvers.Special.Tree(PuzzlePiecesAsInt);
             }
             else if(PuzzleSize == 3)
             {
-                Solvers.SolverV2 solver = new Solvers.SolverV2(PuzzlePiecesAsInt);
+                DateTime StartTime = DateTime.Now;
+                Solvers.Astar aStar = new Astar(PuzzlePiecesAsInt);
+                List<Direction> Directions = aStar.FindPath();
+                DateTime EndingTime = DateTime.Now;
+                var diff = EndingTime.Subtract(StartTime);
+                var res = String.Format("Uren: {0} Minuten: {1} Seconden: {2} Milliseconden: {3}", diff.Hours, diff.Minutes, diff.Seconds, diff.Milliseconds);
+                Debug.WriteLine(res);
+
+                Debug.WriteLine("Puzzle solved");
+                foreach (Direction Direction in Directions)
+                {
+                    Debug.WriteLine(Direction);
+                }
             }
             else
             {
-                ContentDialog dg = new ContentDialog() { Title = "Warning", Content = "Solver only implemented for puzzlesize of 5", CloseButtonText = "Ok" };
+                ContentDialog dg = new ContentDialog() { Title = "Warning", Content = "Solver only implemented for puzzlesize of 3", CloseButtonText = "Ok" };
                 var x = dg.ShowAsync();
             }
         }

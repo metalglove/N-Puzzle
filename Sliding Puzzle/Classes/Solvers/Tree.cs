@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using MoreLinq;
 using Windows.System.Threading;
 using System.Threading;
-namespace Sliding_Puzzle.Classes.Solvers
+namespace Sliding_Puzzle.Classes.Solvers.Special
 {
     class Node
     {
