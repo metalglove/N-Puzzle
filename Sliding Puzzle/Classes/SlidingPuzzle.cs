@@ -167,8 +167,8 @@ namespace Sliding_Puzzle.Classes
             button.VerticalAlignment = VerticalAlignment.Stretch;
             button.HorizontalAlignment = HorizontalAlignment.Stretch;
             button.Click += (sender, e) => Move(sender, e, PuzzlePiece);
-            button.Width = Convert.ToInt32(ImageSize / PuzzleSize);
-            button.Height = Convert.ToInt32(ImageSize / PuzzleSize);
+            //button.Width = Convert.ToInt32(ImageSize / PuzzleSize);
+            //button.Height = Convert.ToInt32(ImageSize / PuzzleSize);
             Debug.Write(PuzzlePieceCount + " ");
             //button.Content = PuzzlePieceCount.ToString(); for debbugging with numbers
             PuzzlePiece.Children.Add(button);

@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 
 namespace Sliding_Puzzle.Classes.Solvers
 {
-
-    public enum NodeState { Untested, Open, Closed, Duplicate }
+    
     public class Node
     {
         public List<int> PuzzleState { get; set; }//The "PuzzleState", the puzzlepieces are represented as numbers in a list
         public int Length { get; set; }//The length of the path from the start node to this node
         public int Distance { get; set; }//The "Distance" from this node to the solution
         public int Value { get; set; }//The value of this node (lower the better). Value = Length + Distance (also known as the cost to travel)
-        public NodeState State { get; set; }
         public Direction Direction { get; set; }
         public Node ParentNode { get; set; }
         public bool IsMoveable { get; set; }
@@ -123,12 +121,7 @@ namespace Sliding_Puzzle.Classes.Solvers
                     {
                         if (!closedList.Exists(item => item.PuzzleState.SequenceEqual(possibleNode.PuzzleState)))
                         {
-                            possibleNode.State = NodeState.Open;
                             openList.Add(possibleNode);
-                        }
-                        else
-                        {
-                            possibleNode.State = NodeState.Closed;
                         }
                     }
                 }
@@ -166,7 +159,7 @@ namespace Sliding_Puzzle.Classes.Solvers
         #region Moves
         private Node Left(Node fromNode)
         {
-            Node LeftOfNode = new Node() { ParentNode = fromNode, Direction = Direction.Left, Length = fromNode.Length + 1, State = NodeState.Untested };
+            Node LeftOfNode = new Node() { ParentNode = fromNode, Direction = Direction.Left, Length = fromNode.Length + 1 };
             List<int> CurrentPuzzleState = new List<int>();
             CurrentPuzzleState = fromNode.PuzzleState.ToList();
 
@@ -191,18 +184,17 @@ namespace Sliding_Puzzle.Classes.Solvers
             else
             {
                 LeftOfNode.IsMoveable = false;
-                LeftOfNode.State = NodeState.Closed;
             }
             if (CheckCompletion(CurrentPuzzleState) == true)
             {
-                LeftOfNode.Direction = Direction.None;
+                LeftOfNode.Direction = Direction.Left;
                 EndingNode = LeftOfNode;
             }
             return LeftOfNode;
         }
         private Node Right(Node fromNode)
         {
-            Node RightOfNode = new Node() { ParentNode = fromNode, Direction = Direction.Right, Length = fromNode.Length + 1, State = NodeState.Untested };
+            Node RightOfNode = new Node() { ParentNode = fromNode, Direction = Direction.Right, Length = fromNode.Length + 1 };
             List<int> CurrentPuzzleState = fromNode.PuzzleState.ToList();
 
             int Location = 0;
@@ -226,18 +218,17 @@ namespace Sliding_Puzzle.Classes.Solvers
             else
             {
                 RightOfNode.IsMoveable = false;
-                RightOfNode.State = NodeState.Closed;
             }
             if (CheckCompletion(CurrentPuzzleState) == true)
             {
-                RightOfNode.Direction = Direction.None;
+                RightOfNode.Direction = Direction.Right;
                 EndingNode = RightOfNode;
             }
             return RightOfNode;
         }
         private Node Up(Node fromNode)
         {
-            Node UpOfNode = new Node() { ParentNode = fromNode, Direction = Direction.Up, Length = fromNode.Length + 1, State = NodeState.Untested };
+            Node UpOfNode = new Node() { ParentNode = fromNode, Direction = Direction.Up, Length = fromNode.Length + 1 };
             List<int> CurrentPuzzleState = fromNode.PuzzleState.ToList();
 
             int Location = 0;
@@ -261,18 +252,17 @@ namespace Sliding_Puzzle.Classes.Solvers
             else
             {
                 UpOfNode.IsMoveable = false;
-                UpOfNode.State = NodeState.Closed;
             }
             if (CheckCompletion(CurrentPuzzleState) == true)
             {
-                UpOfNode.Direction = Direction.None;
+                UpOfNode.Direction = Direction.Up;
                 EndingNode = UpOfNode;
             }
             return UpOfNode;
         }
         private Node Down(Node fromNode)
         {
-            Node DownOfNode = new Node() { ParentNode = fromNode, Direction = Direction.Down, Length = fromNode.Length + 1, State = NodeState.Untested };
+            Node DownOfNode = new Node() { ParentNode = fromNode, Direction = Direction.Down, Length = fromNode.Length + 1 };
             List<int> CurrentPuzzleState = fromNode.PuzzleState.ToList();
 
             int Location = 0;
@@ -296,11 +286,10 @@ namespace Sliding_Puzzle.Classes.Solvers
             else
             {
                 DownOfNode.IsMoveable = false;
-                DownOfNode.State = NodeState.Closed;
             }
             if (CheckCompletion(CurrentPuzzleState) == true)
             {
-                DownOfNode.Direction = Direction.None;
+                DownOfNode.Direction = Direction.Down;
                 EndingNode = DownOfNode;
             }
             return DownOfNode;
@@ -313,7 +302,6 @@ namespace Sliding_Puzzle.Classes.Solvers
             CurrentNode.Distance = CalculateDistance(CurrentPuzzleState);
             CurrentNode.Value = CurrentNode.Distance + CurrentNode.Length;
             CurrentNode.PuzzleState = CurrentPuzzleState;
-            CurrentNode.State = NodeState.Open;
             CurrentNode.IsMoveable = true;
             return CurrentNode;
         }
