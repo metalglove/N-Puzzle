@@ -26,7 +26,6 @@ namespace Sliding_Puzzle.Classes.Solvers
         private List<int> _PuzzleStartState;
         public List<int> PuzzleStartState { get { return _PuzzleStartState; } private set { _PuzzleStartState = value; StartingNode = new Node() { PuzzleState = _PuzzleStartState, Direction = Direction.None }; } }
         public List<int> PuzzleEndState { get; private set; } = new List<int>();
-        private List<int[,]> CorrectPuzzlePieceLocations { get; set; } = new List<int[,]>();
         public Node StartingNode { get; set; }
         public Node EndingNode { get; set; }
         private int MoveablePiece { get; set; }
@@ -45,23 +44,10 @@ namespace Sliding_Puzzle.Classes.Solvers
             PuzzleEndState = CalculateEndState();
             MoveablePiece = PuzzleEndState.Last();
             CalculatePuzzleBounds();
-            CalculateCorrectPuzzlePieceLocations();
         }
         #endregion Constructors
 
         #region PuzzleSetup
-        private void CalculateCorrectPuzzlePieceLocations()
-        {
-            List<int[,]> MultiDimensionalList = new List<int[,]>();
-            for (int i = 0; i < PuzzleSize; i++)
-            {
-                for (int j = 0; j < PuzzleSize; j++)
-                {
-                    MultiDimensionalList.Add(new int[,] { { i }, { j } });
-                }
-            }
-            CorrectPuzzlePieceLocations = MultiDimensionalList;
-        }
         private void CalculatePuzzleBounds()
         {
             for (int i = PuzzleSize - 1; i < PuzzleEndState.Count; i += PuzzleSize)
@@ -111,7 +97,7 @@ namespace Sliding_Puzzle.Classes.Solvers
             while (EndingNode == null)
             {
                 int LowestValue = openList.Min(item => item.Value);
-                Node BestValueNode = openList.FindAll(node => node.Value.Equals(LowestValue)).First();
+                Node BestValueNode = openList.First(node => node.Value.Equals(LowestValue));
                 openList.Remove(BestValueNode);
                 List<Node> possibleNodes = GetPossibleNodes(BestValueNode);
                 closedList.Add(BestValueNode);
@@ -299,7 +285,7 @@ namespace Sliding_Puzzle.Classes.Solvers
         #region Events
         private Node SetNodeInfo(Node CurrentNode, List<int> CurrentPuzzleState)
         {
-            CurrentNode.Distance = CalculateDistance(CurrentPuzzleState);
+            CurrentNode.Distance = CalculateDistanceV2(CurrentPuzzleState);
             CurrentNode.Value = CurrentNode.Distance + CurrentNode.Length;
             CurrentNode.PuzzleState = CurrentPuzzleState;
             CurrentNode.IsMoveable = true;
@@ -313,40 +299,18 @@ namespace Sliding_Puzzle.Classes.Solvers
             CurrentPuzzleState[LRUDWhitePuzzlePieceLocation] = SwapValue1;
             return CurrentPuzzleState;
         }
-        private int CalculateDistance(List<int> currentPuzzleState)
+        private int CalculateDistanceV2(List<int> currentPuzzleState)
         {
-            int CalculatedDistanceFromSolution = 0;
+            int Distance = 0;
             for (int currentNumberInList = 0; currentNumberInList < currentPuzzleState.Count; currentNumberInList++)
             {
-                int Number = currentPuzzleState[currentNumberInList];
-
-                int[,] NumberLocation = CorrectPuzzlePieceLocations[currentNumberInList];
-                int[,] CorrectNumberLocation = CorrectPuzzlePieceLocations[Number];
-                int FirstNumber = 0;
-                int SecondNumber = 0;
-                if (CorrectNumberLocation[0, 0] > NumberLocation[0, 0])
+                int num = currentPuzzleState[currentNumberInList];
+                if (currentNumberInList != num)
                 {
-                    FirstNumber = CorrectNumberLocation[0, 0] - NumberLocation[0, 0];
-                }
-                else
-                {
-                    FirstNumber = NumberLocation[0, 0] - CorrectNumberLocation[0, 0];
-                }
-                if (CorrectNumberLocation[1, 0] > NumberLocation[1, 0])
-                {
-                    SecondNumber = CorrectNumberLocation[1, 0] - NumberLocation[1, 0];
-                }
-                else
-                {
-                    SecondNumber = NumberLocation[1, 0] - CorrectNumberLocation[1, 0];
-                }
-                CalculatedDistanceFromSolution += FirstNumber + SecondNumber;
-                if ((FirstNumber + SecondNumber) > 0)
-                {
-                    CalculatedDistanceFromSolution++;
+                    Distance += (Math.Abs((currentNumberInList % 3) - (num % 3)) + Math.Abs((currentNumberInList / 3) - (num / 3))) + 1;
                 }
             }
-            return CalculatedDistanceFromSolution;
+            return Distance;
         }
         private bool CheckCompletion(List<int> list)
         {
