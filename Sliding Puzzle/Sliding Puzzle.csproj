@@ -98,8 +98,10 @@
     <Compile Include="Classes\Solvers\AStar.cs" />
     <Compile Include="Classes\PuzzleList.cs" />
     <Compile Include="Classes\SlidingPuzzle.cs" />
+    <Compile Include="Classes\Solvers\BFS.cs" />
     <Compile Include="Classes\Solvers\Direction.cs" />
-    <Compile Include="Classes\Solvers\Tree.cs" />
+    <Compile Include="Classes\Solvers\Node.cs" />
+    <Compile Include="Classes\Solvers\SolvingBase.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

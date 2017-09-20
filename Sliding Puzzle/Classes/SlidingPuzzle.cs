@@ -322,6 +322,8 @@ namespace Sliding_Puzzle.Classes
             DateTime StartTime = DateTime.Now;
             Astar aStar = new Astar(PuzzlePiecesAsInt, PuzzleSize);
             Directions = aStar.FindPath();
+            //BFS bfs = new BFS(PuzzlePiecesAsInt, PuzzleSize);
+            //Directions = bfs.FindPath();
             DateTime EndingTime = DateTime.Now;
             var diff = EndingTime.Subtract(StartTime);
             var res = String.Format("Hours: {0} Minutes: {1} Seconds: {2} Milliseconds: {3}", diff.Hours, diff.Minutes, diff.Seconds, diff.Milliseconds);
@@ -329,7 +331,7 @@ namespace Sliding_Puzzle.Classes
             Debug.WriteLine("Puzzle solved. Moves: " + Directions.Count);
             foreach (Direction Direction in Directions)
             {
-                Debug.WriteLine(Direction);
+                Debug.Write(Direction + " ");
             }
         }
         public List<Direction> GetSolvingMoves()
