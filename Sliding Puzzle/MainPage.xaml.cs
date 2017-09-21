@@ -35,12 +35,28 @@ namespace Sliding_Puzzle
             lvPuzzles.ItemsSource = Classes.PuzzleList.Instance;
             LoadExistingPuzzlesAsync();
         }
-        private void Puzzle_Click(object sender, RoutedEventArgs e)
+        private async void Puzzle_ClickAsync(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
             StorageFolder Folder = (StorageFolder)button.Tag;
             int PuzzleSize = int.Parse(button.Content.ToString());
-            this.ContentFrame.Navigate(typeof(Views.SlidingPuzzle), new Classes.SlidingPuzzle(PuzzleSize, Folder, Folder.DisplayName));
+            if (await CheckIfItemExistsAsync(Folder, PuzzleSize.ToString()) == true)
+            {
+                this.ContentFrame.Navigate(typeof(Views.SlidingPuzzle), new Classes.SlidingPuzzle(PuzzleSize, Folder, Folder.DisplayName));
+            }
+            else
+            {
+                ContentDialog dg = new ContentDialog()
+                {
+                    Title = "Error!",
+                    Content = "The puzzle folder does not contain the desired puzzlesize. The application will now shutdown.",
+                    CloseButtonText = "Ok",
+                    RequestedTheme = ElementTheme.Dark
+                };
+                await dg.ShowAsync();
+                App.Current.Exit();
+            }
+
         }
         private void CreatePuzzleFromImage_Click(object sender, RoutedEventArgs e)
         {
