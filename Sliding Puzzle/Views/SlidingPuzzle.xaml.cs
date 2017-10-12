@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Navigation;
 using Sliding_Puzzle.Classes;
 using System.Threading.Tasks;
 using Sliding_Puzzle.Classes.Solvers;
+using System.Diagnostics;
 
 namespace Sliding_Puzzle.Views
 {
@@ -48,7 +49,8 @@ namespace Sliding_Puzzle.Views
         }
         private void SetPuzzle()
         {
-            PuzzleGrid = Puzzle.GetPuzzle();
+            PuzzleGrid = Puzzle.PuzzleBox;
+            PuzzleGrid.Name = "GeneratedPuzzleGrid";
             Grid.SetColumn(PuzzleGrid, 0);
             SlidingPuzzleGrid.Children.Add(PuzzleGrid);
         }
@@ -66,13 +68,61 @@ namespace Sliding_Puzzle.Views
         }
         private void SolveButton_Click(object sender, RoutedEventArgs e)
         {
-            Puzzle.SolvePuzzle();
+            Puzzle.SolvePuzzle(GetPuzzlePiecesAsInt());
             Moves = Puzzle.GetSolvingMoves();
-            lsMoves.Items.Clear();
+            PerformSolvingMoves();
+            /*lsMoves.Items.Clear();
             foreach (Direction item in Moves)
             {
                 lsMoves.Items.Add(item.ToString());
+            }*/
+        }
+        private void PerformSolvingMoves()
+        {
+            foreach (Direction Direction in Moves)
+            {
+                Tuple<Grid,Grid> PuzzlePiecess = GetPuzzlePieceToMove(Direction);
+                Puzzle.Move(PuzzlePiecess.Item2, PuzzlePiecess.Item1);
+                //Task.Delay(2000);
+                Debug.WriteLine("Moved: " + PuzzlePiecess.Item2.Tag.ToString() + " and " + PuzzlePiecess.Item1.Tag.ToString());
             }
+        }
+        private Tuple<Grid,Grid> GetPuzzlePieceToMove(Direction Direction)
+        {
+            PuzzleGrid = SlidingPuzzleGrid.FindName("GeneratedPuzzleGrid") as Grid;
+            int wpp = 0;
+            foreach (Grid PuzzlePiece in PuzzleGrid.Children)
+            {
+                if (PuzzlePiece.Tag.ToString() == (Puzzle.TotalPuzzleSize - 1).ToString())
+                {
+                    switch (Direction)
+                    {
+                        case Direction.Left:
+                            return new Tuple<Grid, Grid>(PuzzleGrid.Children[wpp] as Grid, PuzzleGrid.Children[wpp + 1] as Grid); 
+                        case Direction.Right:
+                            return new Tuple<Grid, Grid>(PuzzleGrid.Children[wpp] as Grid, PuzzleGrid.Children[wpp - 1] as Grid);
+                        case Direction.Up:
+                            return new Tuple<Grid, Grid>(PuzzleGrid.Children[wpp] as Grid, PuzzleGrid.Children[wpp + Puzzle.PuzzleSize] as Grid);
+                        case Direction.Down:
+                            return new Tuple<Grid, Grid>(PuzzleGrid.Children[wpp] as Grid, PuzzleGrid.Children[wpp - Puzzle.PuzzleSize] as Grid);
+                        default:
+                            break;
+                    }
+                    break;
+                }
+                wpp++;
+            }
+            throw new ArgumentException("PuzzlePiece not found", "wpp");
+        }
+        private List<int> GetPuzzlePiecesAsInt()
+        {
+            PuzzleGrid = SlidingPuzzleGrid.FindName("GeneratedPuzzleGrid") as Grid;
+            List<int> PuzzlePiecesAsInt = new List<int>();
+            foreach (Grid piece in PuzzleGrid.Children)
+            {
+                PuzzlePiecesAsInt.Add(int.Parse(piece.Tag.ToString()));
+            }
+            return PuzzlePiecesAsInt;
         }
     }
 }

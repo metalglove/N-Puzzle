@@ -21,10 +21,10 @@ namespace Sliding_Puzzle.Classes
     {
         #region PuzzleSetup
         public int PuzzleSize { get; private set; }
-        private int TotalPuzzleSize { get; set; }
+        public int TotalPuzzleSize { get; private set; }
         public string PuzzleName { get; set; }
         public StorageFolder Folder { get; set; }
-        private Grid PuzzleBox = new Grid();
+        public Grid PuzzleBox { get; private set;} = new Grid();
         private List<Grid> PuzzlePieces = new List<Grid>();
         private Grid WhitePuzzlePiece = new Grid();
         private List<int> PuzzlePiecesAsInt = new List<int>();
@@ -261,6 +261,35 @@ namespace Sliding_Puzzle.Classes
                 Debug.WriteLine("Wrong move.");
             }
         }
+        public void Move(Grid PuzzlePiece, Grid WhitePuzzlePiece)
+        {
+            int PuzzlePieceRow = Grid.GetRow(PuzzlePiece);
+            int PuzzlePieceColumn = Grid.GetColumn(PuzzlePiece);
+            int WhitePuzzlePieceRow = Grid.GetRow(WhitePuzzlePiece);
+            int WhitePuzzlePieceColumn = Grid.GetColumn(WhitePuzzlePiece);
+            if (PuzzlePieceRow == WhitePuzzlePieceRow || PuzzlePieceColumn == WhitePuzzlePieceColumn)
+            {
+                int PPR = PuzzlePieceRow - WhitePuzzlePieceRow;
+                int PPC = PuzzlePieceColumn - WhitePuzzlePieceColumn;
+                if (PPR >= -1 && PPR <= 1 && PPC >= -1 && PPC <= 1)
+                {
+                    Grid.SetRow(PuzzlePiece, WhitePuzzlePieceRow);
+                    Grid.SetColumn(PuzzlePiece, WhitePuzzlePieceColumn);
+
+                    Grid.SetRow(WhitePuzzlePiece, PuzzlePieceRow);
+                    Grid.SetColumn(WhitePuzzlePiece, PuzzlePieceColumn);
+                    if (Moves == 0)
+                    {
+                        PuzzleTimer = new DispatcherTimer();
+                        PuzzleTimer.Interval = TimeSpan.FromSeconds(1);
+                        PuzzleTimer.Tick += UpdateTimer;
+                        PuzzleTimer.Start();
+                    }
+                    Moves++;
+                    //CheckCompletionAsync();
+                }
+            }
+        }
         private void UpdateTimer(object sender, object e)
         {
             TimeSpent++;
@@ -299,10 +328,6 @@ namespace Sliding_Puzzle.Classes
         }
         #endregion PuzzleEvents
 
-        public Grid GetPuzzle()
-        {
-            return PuzzleBox;
-        }
         public void ResetPuzzle()
         {
             PuzzlePieces = new List<Grid>();
@@ -317,13 +342,11 @@ namespace Sliding_Puzzle.Classes
             Moves = 0;
             TimeSpent = 0;
         }
-        public void SolvePuzzle()
+        public void SolvePuzzle(List<int> PPAI)
         {
             DateTime StartTime = DateTime.Now;
-            Astar aStar = new Astar(PuzzlePiecesAsInt, PuzzleSize);
+            Astar aStar = new Astar(PPAI, PuzzleSize);
             Directions = aStar.FindPath();
-            //BFS bfs = new BFS(PuzzlePiecesAsInt, PuzzleSize);
-            //Directions = bfs.FindPath();
             DateTime EndingTime = DateTime.Now;
             var diff = EndingTime.Subtract(StartTime);
             var res = String.Format("Hours: {0} Minutes: {1} Seconds: {2} Milliseconds: {3}", diff.Hours, diff.Minutes, diff.Seconds, diff.Milliseconds);
