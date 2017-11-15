@@ -26,7 +26,7 @@ namespace Sliding_Puzzle.Classes
         public StorageFolder Folder { get; set; }
         public Grid PuzzleBox { get; private set;} = new Grid();
         private List<Grid> PuzzlePieces = new List<Grid>();
-        private Grid WhitePuzzlePiece = new Grid();
+        Grid WhitePuzzlePiece = new Grid();
         private List<int> PuzzlePiecesAsInt = new List<int>();
         private List<int[,]> CorrectPuzzleLocations = new List<int[,]>();
         private Random Random = new Random();
@@ -261,7 +261,7 @@ namespace Sliding_Puzzle.Classes
                 Debug.WriteLine("Wrong move.");
             }
         }
-        public void Move(Grid PuzzlePiece, Grid WhitePuzzlePiece)
+        public void Move(Grid PuzzlePiece)
         {
             int PuzzlePieceRow = Grid.GetRow(PuzzlePiece);
             int PuzzlePieceColumn = Grid.GetColumn(PuzzlePiece);

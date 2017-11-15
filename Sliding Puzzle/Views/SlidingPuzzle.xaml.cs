@@ -16,6 +16,7 @@ using Sliding_Puzzle.Classes;
 using System.Threading.Tasks;
 using Sliding_Puzzle.Classes.Solvers;
 using System.Diagnostics;
+using Windows.UI.Core;
 
 namespace Sliding_Puzzle.Views
 {
@@ -25,6 +26,7 @@ namespace Sliding_Puzzle.Views
         private DispatcherTimer CheckTimeSpent = new DispatcherTimer();
         private List<Direction> Moves = new List<Direction>();
         private Grid PuzzleGrid { get; set; }
+        private Grid newPuzzleGrid { get; set; }
         public SlidingPuzzle()
         {
             this.InitializeComponent();
@@ -70,45 +72,80 @@ namespace Sliding_Puzzle.Views
         {
             Puzzle.SolvePuzzle(GetPuzzlePiecesAsInt());
             Moves = Puzzle.GetSolvingMoves();
-            PerformSolvingMoves();
-            /*lsMoves.Items.Clear();
+            Task.Run(() => PerformSolvingMoves());
+            lsMoves.Items.Clear();
             foreach (Direction item in Moves)
             {
                 lsMoves.Items.Add(item.ToString());
-            }*/
+            }
         }
-        private void PerformSolvingMoves()
+        private async void PerformSolvingMoves()
         {
             foreach (Direction Direction in Moves)
             {
-                Tuple<Grid,Grid> PuzzlePiecess = GetPuzzlePieceToMove(Direction);
-                Puzzle.Move(PuzzlePiecess.Item2, PuzzlePiecess.Item1);
-                //Task.Delay(2000);
-                Debug.WriteLine("Moved: " + PuzzlePiecess.Item2.Tag.ToString() + " and " + PuzzlePiecess.Item1.Tag.ToString());
+                
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => 
+                {
+                    Tuple<Grid, Grid> PuzzlePiecess = GetPuzzlePieceToMove(Direction);
+                    Puzzle.Move(PuzzlePiecess.Item2);
+                    Debug.WriteLine("Moved: " + PuzzlePiecess.Item2.Tag.ToString() + " and " + PuzzlePiecess.Item1.Tag.ToString());
+                });
+                await Task.Delay(200);
             }
         }
         private Tuple<Grid,Grid> GetPuzzlePieceToMove(Direction Direction)
         {
-            PuzzleGrid = SlidingPuzzleGrid.FindName("GeneratedPuzzleGrid") as Grid;
             int wpp = 0;
             foreach (Grid PuzzlePiece in PuzzleGrid.Children)
             {
                 if (PuzzlePiece.Tag.ToString() == (Puzzle.TotalPuzzleSize - 1).ToString())
                 {
+                    Grid witpuzelstukje = PuzzlePiece;
+                    Grid puzelstukje = new Grid();
+                    int pRow = Grid.GetRow(PuzzlePiece);
+                    int pColumn = Grid.GetColumn(PuzzlePiece);
                     switch (Direction)
                     {
                         case Direction.Left:
-                            return new Tuple<Grid, Grid>(PuzzleGrid.Children[wpp] as Grid, PuzzleGrid.Children[wpp + 1] as Grid); 
+                            pColumn--;
+                            break;
                         case Direction.Right:
-                            return new Tuple<Grid, Grid>(PuzzleGrid.Children[wpp] as Grid, PuzzleGrid.Children[wpp - 1] as Grid);
+                            pColumn++;
+                            break;
                         case Direction.Up:
-                            return new Tuple<Grid, Grid>(PuzzleGrid.Children[wpp] as Grid, PuzzleGrid.Children[wpp + Puzzle.PuzzleSize] as Grid);
+                            pRow--;
+                            break;
                         case Direction.Down:
-                            return new Tuple<Grid, Grid>(PuzzleGrid.Children[wpp] as Grid, PuzzleGrid.Children[wpp - Puzzle.PuzzleSize] as Grid);
+                            pRow++;
+                            break;
                         default:
                             break;
                     }
-                    break;
+
+                    foreach (UIElement item in PuzzleGrid.Children)
+                    {
+                        Grid piec = item as Grid;
+                        if (Grid.GetRow(piec) == pRow && Grid.GetColumn(piec) == pColumn)
+                        {
+                            puzelstukje = piec;
+                        }
+                    }
+
+                    //PuzzleGrid.Children.RemoveAt(iTo);
+                    //PuzzleGrid.Children.RemoveAt(wpp);
+                    //if (iTo> wpp)
+                    //{
+                    //    PuzzleGrid.Children.Insert(wpp, puzelstukje);
+                    //    PuzzleGrid.Children.Insert(iTo, witpuzelstukje);                      
+                    //}
+                    //else
+                    //{
+                    //    PuzzleGrid.Children.Insert(iTo, witpuzelstukje);
+                    //    PuzzleGrid.Children.Insert(wpp, puzelstukje);                     
+                    //}
+
+
+                    return new Tuple<Grid, Grid>(witpuzelstukje, puzelstukje);       
                 }
                 wpp++;
             }
@@ -124,5 +161,16 @@ namespace Sliding_Puzzle.Views
             }
             return PuzzlePiecesAsInt;
         }
+        //int stepcount = 0;
+        //private void stepsolver_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Tuple<Grid, Grid> PuzzlePiecess = GetPuzzlePieceToMove(Moves[stepcount]);
+        //    Puzzle.Move(PuzzlePiecess.Item2);
+        //    this.UpdateLayout();
+        //    //Task.Delay(2000);
+        //    Debug.WriteLine("Moved: " + PuzzlePiecess.Item2.Tag.ToString() + " and " + PuzzlePiecess.Item1.Tag.ToString());
+        //    stepcount++;
+        //    step.Text = Moves[stepcount].ToString();
+        //}
     }
 }

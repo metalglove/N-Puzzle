@@ -15,9 +15,11 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="6*"/>
         </Grid.RowDefinitions>
+        <!--<Button Grid.Row="0" Name="stepsolver" Click="stepsolver_Click" Content="Solver by step" VerticalAlignment="Center"  HorizontalAlignment="Left" />-->
         <Button Grid.Row="0"  Name="ResetButton" Click="ResetButton_ClickAsync" Content="Reset" FontSize="30" Width="200" Height="50" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20"/>
         <Button Grid.Row="0"  Name="SolveButton" Click="SolveButton_Click" Content="Solve" FontSize="30" Width="200" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
         <TextBlock Grid.Row="0"  Name="TimerTextBlock" Height="50" FontSize="30" Text="Time Played: 0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20"/>
+        <TextBlock Name="step" Grid.Row="0" FontSize="20" Width="200" Margin="0,0,300,0"/>
         <Grid Grid.Row="1"  Name="SlidingPuzzleGrid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="500*"/>
