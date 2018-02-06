@@ -84,7 +84,7 @@ namespace Sliding_Puzzle.Views
                     await SaveIRandomAccessStreamToFileAsync(fileStream, imagename);
                     StorageFolder pictureFolder = await KnownFolders.PicturesLibrary.CreateFolderAsync("SlidingPuzzles", CreationCollisionOption.OpenIfExists);
                     ImageFolder = await pictureFolder.GetFolderAsync(imagename);
-                    if (Classes.PuzzleList.Instance.Any(puzzle => puzzle.Name != imagename))
+                    if (Classes.PuzzleList.Instance.All(puzzle => puzzle.Name != imagename))
                     {
                         Classes.PuzzleList.Instance.Add(new Classes.Puzzle(ImageFolder.DisplayName, ImageFolder, image, false, false, false, false));
                     }
